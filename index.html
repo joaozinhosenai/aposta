@@ -3,63 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apostas de Basquete - Sua Melhor Escolha</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <title>Basquetebol Bets | A melhor experiência em apostas de basquete</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <header class="main-header">
-        <div class="container">
-            <h1 class="logo"><i class="fas fa-basketball-ball"></i> Basquetebol Bets</h1>
+        <div class="header-container container">
+            <a href="#" class="logo-link">
+                <i class="fas fa-basketball-ball"></i>
+                <h1 class="logo">Basquetebol Bets</h1>
+            </a>
             <nav class="main-nav">
-                <ul>
-                    <li><a href="#">Ao Vivo</a></li>
-                    <li><a href="#">Próximos Jogos</a></li>
-                    <li><a href="#">Resultados</a></li>
-                    <li><a href="#">Minhas Apostas</a></li>
-                    <li><a href="#" class="btn-primary">Entrar</a></li>
+                <ul class="nav-list">
+                    <li><a href="#" class="nav-link active"><i class="fas fa-chart-line"></i> Apostas ao Vivo</a></li>
+                    <li><a href="#" class="nav-link"><i class="fas fa-calendar-alt"></i> Próximos Jogos</a></li>
+                    <li><a href="#" class="nav-link"><i class="fas fa-trophy"></i> Competições</a></li>
+                    <li><a href="#" class="nav-link"><i class="fas fa-user-circle"></i> Minha Conta</a></li>
+                    <li><a href="#" class="nav-link"><i class="fas fa-question-circle"></i> Ajuda</a></li>
                 </ul>
             </nav>
+            <div class="auth-buttons">
+                <button class="btn btn-login">Entrar</button>
+                <button class="btn btn-signup">Registrar</button>
+            </div>
         </div>
     </header>
 
-    <main class="container main-content">
-        <section class="game-listings">
-            <h2><i class="fas fa-calendar-alt"></i> Jogos em Destaque</h2>
-            <div id="games-container" class="games-grid">
-                </div>
-        </section>
+    <main class="main-content-area">
+        <div class="content-container container">
 
-        <aside class="bet-slip-container">
-            <h2><i class="fas fa-ticket-alt"></i> Seu Ticket de Aposta</h2>
-            <div id="bet-slip-content" class="bet-slip-content">
-                <ul id="bet-list" class="bet-list">
-                    <li class="empty-slip">Nenhuma aposta selecionada.</li>
-                </ul>
-                <div class="bet-summary">
-                    <div class="summary-item">
-                        <span>Valor da Aposta:</span>
-                        <input type="number" id="stake-input" value="10.00" min="1" step="0.5">
-                    </div>
-                    <div class="summary-item total-odds-display">
-                        <span>Odds Combinadas:</span>
-                        <span id="total-odds-value">1.00</span>
-                    </div>
-                    <div class="summary-item potential-return-display">
-                        <span>Retorno Potencial:</span>
-                        <span id="potential-return-value">0.00</span>
-                    </div>
+            <section class="hero-banner-static">
+                <img src="https://i.ibb.co/L542d1q/lakers-celtics.jpg" alt="Jogo de Basquete em Destaque" class="banner-image">
+                <div class="banner-content">
+                    <h2>🏀 Super Clássico: Lakers vs Celtics ao Vivo!</h2>
+                    <p>Acompanhe cada lance e faça suas apostas com as melhores odds do mercado.</p>
+                    <button class="btn btn-hero">Apostar Agora!</button>
                 </div>
-                <button id="place-bet-button" class="btn-place-bet" disabled>Fazer Aposta</button>
+            </section>
+
+            <section class="live-games-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-globe"></i> Jogos Ao Vivo</h2>
+                </div>
+                <div class="live-games-carousel">
+                    <button class="carousel-control-mini prev" aria-label="Anterior"><i class="fas fa-chevron-left"></i></button>
+                    <div class="live-games-track">
+                        <div class="live-game-card">
+                            <img src="https://i.ibb.co/S66n2Wn/logo-lakers.png" alt="Lakers" class="live-game-logo">
+                            <span class="live-game-score">85 - 78</span>
+                            <img src="https://i.ibb.co/3rJ5BvJ/logo-celtics.png" alt="Celtics" class="live-game-logo">
+                            <div class="live-game-details">
+                                <span class="game-time">Q3 - 05:30</span>
+                                <button class="btn-live-bet">Apostar</button>
+                            </div>
+                        </div>
+                        <div class="live-game-card">
+                            <img src="https://i.ibb.co/W2z0p5X/logo-warriors.png" alt="Warriors" class="live-game-logo">
+                            <span class="live-game-score">102 - 99</span>
+                            <img src="https://i.ibb.co/cNMt687/logo-rockets.png" alt="Rockets" class="live-game-logo">
+                            <div class="live-game-details">
+                                <span class="game-time">Q4 - 02:15</span>
+                                <button class="btn-live-bet">Apostar</button>
+                            </div>
+                        </div>
+                        <div class="live-game-card">
+                            <img src="https://i.ibb.co/dMvL3g4/logo-bulls.png" alt="Bulls" class="live-game-logo">
+                            <span class="live-game-score">55 - 60</span>
+                            <img src="https://i.ibb.co/rQ296S2/logo-knicks.png" alt="Knicks" class="live-game-logo">
+                            <div class="live-game-details">
+                                <span class="game-time">Intervalo</span>
+                                <button class="btn-live-bet">Apostar</button>
+                            </div>
+                        </div>
+                        <div class="live-game-card">
+                            <img src="https://i.ibb.co/M9qH170/logo-heat.png" alt="Heat" class="live-game-logo">
+                            <span class="live-game-score">70 - 68</span>
+                            <img src="https://i.ibb.co/YyJ2vWp/logo-raptors.png" alt="Raptors" class="live-game-logo">
+                            <div class="live-game-details">
+                                <span class="game-time">Q3 - 08:45</span>
+                                <button class="btn-live-bet">Apostar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="carousel-control-mini next" aria-label="Próximo"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </section>
+
+            <div class="main-layout">
+                <div class="game-listings-container">
+                    <section class="game-listings">
+                        <div class="section-header">
+                            <h2><i class="fas fa-basketball-ball"></i> Todos os Jogos</h2>
+                            <div class="filters">
+                                <label for="league-filter">Liga:</label>
+                                <select id="league-filter">
+                                    <option value="all">Todas</option>
+                                    <option value="nba">NBA</option>
+                                    <option value="euroleague">EuroLeague</option>
+                                </select>
+                                <input type="text" id="search-bar" placeholder="Buscar por time...">
+                            </div>
+                        </div>
+                        <div id="games-container" class="games-grid">
+                            <div class="game-card">
+                                <div class="teams-container">
+                                    <div class="team-info">
+                                        <img src="https://i.ibb.co/S66n2Wn/logo-lakers.png" alt="Logo Lakers">
+                                        <h3>Lakers</h3>
+                                    </div>
+                                    <span class="vs-text">vs</span>
+                                    <div class="team-info">
+                                        <img src="https://i.ibb.co/3rJ5BvJ/logo-celtics.png" alt="Logo Celtics">
+                                        <h3>Celtics</h3>
+                                    </div>
+                                </div>
+                                <div class="odd-selection">
+                                    <button class="odd-button" data-odd="1.95" data-team="Lakers">Vitória Lakers (1.95)</button>
+                                    <button class="odd-button" data-odd="1.85" data-team="Celtics">Vitória Celtics (1.85)</button>
+                                </div>
+                            </div>
+                            </div>
+                    </section>
+                </div>
+    
+                <aside class="bet-slip-container">
+                    <div class="bet-slip-header">
+                        <h2><i class="fas fa-ticket-alt"></i> Ticket de Aposta</h2>
+                    </div>
+                    <div id="bet-slip-content" class="bet-slip-content">
+                        <ul id="bet-list" class="bet-list">
+                            <li class="empty-slip">Nenhuma aposta selecionada.</li>
+                        </ul>
+                        <div class="bet-summary">
+                            <div class="summary-item">
+                                <span>Valor da Aposta:</span>
+                                <input type="number" id="stake-input" value="10.00" min="1" step="0.5">
+                            </div>
+                            <div class="summary-item total-odds-display">
+                                <span>Odds Combinadas:</span>
+                                <span id="total-odds-value">1.00</span>
+                            </div>
+                            <div class="summary-item potential-return-display">
+                                <span>Retorno Potencial:</span>
+                                <span id="potential-return-value">0.00</span>
+                            </div>
+                        </div>
+                        <button id="place-bet-button" class="btn btn-place-bet" disabled>Fazer Aposta</button>
+                        <p class="responsible-gambling">Aposte com responsabilidade. Jogue apenas o que pode perder.</p>
+                    </div>
+                </aside>
             </div>
-        </aside>
+        </div>
     </main>
 
     <footer class="main-footer">
-        <div class="container">
-            <p>&copy; 2025 Basquetebol Bets. Todos os direitos reservados. Aposte com responsabilidade.</p>
+        <div class="footer-container container">
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Sobre Nós</h4>
+                    <ul>
+                        <li><a href="#">Quem Somos</a></li>
+                        <li><a href="#">Carreiras</a></li>
+                        <li><a href="#">Termos e Condições</a></li>
+                        <li><a href="#">Política de Privacidade</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Apostas</h4>
+                    <ul>
+                        <li><a href="#">Regras das Apostas</a></li>
+                        <li><a href="#">Apostas ao Vivo</a></li>
+                        <li><a href="#">Resultados</a></li>
+                        <li><a href="#">Estatísticas</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Suporte</h4>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Entre em Contato</a></li>
+                        <li><a href="#">Jogo Responsável</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="social-media">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Basquetebol Bets. Todos os direitos reservados. 18+</p>
+            </div>
         </div>
     </footer>
 
