@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apostas de Basquete - Sua Melhor Escolha</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container">
+            <h1 class="logo"><i class="fas fa-basketball-ball"></i> Basquetebol Bets</h1>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#">Ao Vivo</a></li>
+                    <li><a href="#">Próximos Jogos</a></li>
+                    <li><a href="#">Resultados</a></li>
+                    <li><a href="#">Minhas Apostas</a></li>
+                    <li><a href="#" class="btn-primary">Entrar</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container main-content">
+        <section class="game-listings">
+            <h2><i class="fas fa-calendar-alt"></i> Jogos em Destaque</h2>
+            <div id="games-container" class="games-grid">
+                </div>
+        </section>
+
+        <aside class="bet-slip-container">
+            <h2><i class="fas fa-ticket-alt"></i> Seu Ticket de Aposta</h2>
+            <div id="bet-slip-content" class="bet-slip-content">
+                <ul id="bet-list" class="bet-list">
+                    <li class="empty-slip">Nenhuma aposta selecionada.</li>
+                </ul>
+                <div class="bet-summary">
+                    <div class="summary-item">
+                        <span>Valor da Aposta:</span>
+                        <input type="number" id="stake-input" value="10.00" min="1" step="0.5">
+                    </div>
+                    <div class="summary-item total-odds-display">
+                        <span>Odds Combinadas:</span>
+                        <span id="total-odds-value">1.00</span>
+                    </div>
+                    <div class="summary-item potential-return-display">
+                        <span>Retorno Potencial:</span>
+                        <span id="potential-return-value">0.00</span>
+                    </div>
+                </div>
+                <button id="place-bet-button" class="btn-place-bet" disabled>Fazer Aposta</button>
+            </div>
+        </aside>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <p>&copy; 2025 Basquetebol Bets. Todos os direitos reservados. Aposte com responsabilidade.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

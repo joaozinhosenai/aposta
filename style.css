@@ -1,0 +1,535 @@
+/* Estilos Gerais */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    color: #333;
+    line-height: 1.6;
+}
+
+header {
+    background-color: #004a91; /* Azul de basquete */
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+main {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+.game-list {
+    flex: 3;
+}
+
+.bet-slip {
+    flex: 1;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Estilos para Jogos */
+.game-card {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.game-card h3 {
+    margin-top: 0;
+    color: #004a91;
+}
+
+.odds-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.odd-button {
+    background-color: #e9ecef;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.odd-button:hover {
+    background-color: #d8dbe0;
+}
+
+.odd-button.selected {
+    background-color: #007bff; /* Azul vibrante */
+    color: white;
+}
+
+/* Estilos para o Ticket de Aposta */
+#bet-list {
+    list-style: none;
+    padding: 0;
+}
+
+#bet-list li {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.bet-summary {
+    border-top: 1px solid #ddd;
+    margin-top: 15px;
+    padding-top: 15px;
+}
+
+#place-bet {
+    width: 100%;
+    padding: 12px;
+    background-color: #28a745; /* Verde para sucesso */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+#place-bet:hover {
+    background-color: #218838;
+}
+/* Importação de fontes */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap');
+
+:root {
+    --primary-color: #007bff; /* Azul vibrante */
+    --secondary-color: #6c757d; /* Cinza */
+    --accent-color: #28a745; /* Verde para sucesso */
+    --background-light: #f8f9fa; /* Fundo claro */
+    --background-dark: #343a40; /* Fundo escuro para cabeçalho/rodapé */
+    --text-color-dark: #212529;
+    --text-color-light: #ffffff;
+    --border-color: #dee2e6;
+    --shadow-light: rgba(0, 0, 0, 0.1);
+    --shadow-medium: rgba(0, 0, 0, 0.15);
+}
+
+/* Reset Básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: var(--background-light);
+    color: var(--text-color-dark);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Cabeçalho */
+.main-header {
+    background-color: var(--background-dark);
+    color: var(--text-color-light);
+    padding: 15px 0;
+    box-shadow: 0 2px 4px var(--shadow-medium);
+}
+
+.main-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: var(--primary-color);
+}
+
+.logo .fas {
+    color: var(--text-color-light);
+    margin-right: 10px;
+}
+
+.main-nav ul {
+    list-style: none;
+    display: flex;
+    gap: 25px;
+}
+
+.main-nav a {
+    color: var(--text-color-light);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.main-nav a:hover {
+    color: var(--primary-color);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+    padding: 8px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Tom mais escuro do azul */
+}
+
+/* Conteúdo Principal */
+.main-content {
+    display: flex;
+    flex: 1; /* Garante que o main ocupe o espaço restante */
+    gap: 30px;
+    padding: 30px 20px;
+}
+
+.game-listings {
+    flex: 3;
+}
+
+.game-listings h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.7rem;
+    color: var(--primary-color);
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+}
+
+.game-listings h2 .fas {
+    margin-right: 10px;
+    color: var(--secondary-color);
+}
+
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* Card do Jogo */
+.game-card {
+    background-color: var(--text-color-light);
+    border-radius: 10px;
+    box-shadow: 0 4px 15px var(--shadow-light);
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.game-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px var(--shadow-medium);
+}
+
+.game-card h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+    color: var(--text-color-dark);
+    text-align: center;
+}
+
+.odd-selection {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+}
+
+.odd-button {
+    flex: 1;
+    background-color: var(--background-light);
+    border: 1px solid var(--border-color);
+    padding: 12px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+    text-align: center;
+    color: var(--text-color-dark);
+}
+
+.odd-button:hover {
+    background-color: #e9ecef;
+    border-color: var(--primary-color);
+}
+
+.odd-button.selected {
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+    border-color: var(--primary-color);
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.4);
+}
+
+.odd-button.selected:hover {
+    background-color: #0056b3;
+}
+
+/* Ticket de Aposta (Aside) */
+.bet-slip-container {
+    flex: 1.2;
+    background-color: var(--text-color-light);
+    border-radius: 10px;
+    box-shadow: 0 4px 15px var(--shadow-light);
+    padding: 25px;
+    position: sticky; /* Fica fixo ao rolar */
+    top: 20px; /* Distância do topo */
+    align-self: flex-start; /* Alinha no início para o sticky funcionar */
+}
+
+.bet-slip-container h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.bet-slip-container h2 .fas {
+    margin-right: 10px;
+    color: var(--secondary-color);
+}
+
+.bet-list {
+    list-style: none;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+}
+
+.bet-list li {
+    background-color: var(--background-light);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.95rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.bet-list li.empty-slip {
+    text-align: center;
+    font-style: italic;
+    color: var(--secondary-color);
+    padding: 20px;
+}
+
+.remove-bet {
+    background: none;
+    border: none;
+    color: #dc3545; /* Vermelho para remover */
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+}
+
+.remove-bet:hover {
+    color: #c82333;
+}
+
+.bet-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.summary-item input[type="number"] {
+    width: 90px;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    text-align: right;
+    font-size: 1rem;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.potential-return-display span {
+    color: var(--accent-color);
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.btn-place-bet {
+    width: 100%;
+    padding: 15px;
+    background-color: var(--accent-color);
+    color: var(--text-color-light);
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+}
+
+.btn-place-bet:hover:not(:disabled) {
+    background-color: #218838;
+}
+
+.btn-place-bet:disabled {
+    background-color: var(--secondary-color);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Rodapé */
+.main-footer {
+    background-color: var(--background-dark);
+    color: var(--text-color-light);
+    text-align: center;
+    padding: 20px 0;
+    margin-top: auto; /* Empurra o rodapé para baixo */
+    box-shadow: 0 -2px 4px var(--shadow-medium);
+    font-size: 0.9rem;
+}
+
+/* Responsividade */
+@media (max-width: 992px) {
+    .main-content {
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .bet-slip-container {
+        position: static; /* Remove sticky em telas menores */
+        top: auto;
+        width: 100%;
+    }
+
+    .games-grid {
+        grid-template-columns: 1fr; /* Uma coluna em telas menores */
+    }
+
+    .main-header .container {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .main-nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .logo {
+        font-size: 1.5rem;
+    }
+
+    .main-nav a {
+        font-size: 0.9rem;
+    }
+
+    .game-card h3 {
+        font-size: 1.2rem;
+    }
+
+    .odd-button {
+        font-size: 1rem;
+        padding: 10px 8px;
+    }
+
+    .bet-slip-container {
+        padding: 15px;
+    }
+
+    .bet-slip-container h2 {
+        font-size: 1.3rem;
+    }
+
+    .summary-item {
+        font-size: 1rem;
+    }
+} 
+
+/* Estilos para o Card de Jogo */
+.game-card {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Estilos para o container de equipes */
+.teams-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.team-info {
+    text-align: center;
+    flex: 1;
+}
+
+.team-info h3 {
+    margin: 5px 0;
+    color: #004a91;
+}
+
+.team-info img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid #004a91;
+    object-fit: cover; /* Garante que a imagem se ajuste bem */
+}
+
+/* Estilo para o separador "VS" */
+.vs-text {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #666;
+    margin: 0 10px;
+}
+
+/* ... (Seu código CSS para odds e outros elementos) ... */
