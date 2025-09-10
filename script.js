@@ -1,188 +1,149 @@
-// Dados de exemplo, em um site real viriam de uma API
-const games = [
-    {
-        id: 'game-1',
-        homeTeam: 'Los Angeles Lakers',
-        awayTeam: 'Boston Celtics',
-        odds: {
-            homeWin: 1.65,
-            awayWin: 2.20
-        },
-        time: 'Hoje, 20:00 BRT'
-    },
-    {
-        id: 'game-2',
-        homeTeam: 'Golden State Warriors',
-        awayTeam: 'Brooklyn Nets',
-        odds: {
-            homeWin: 1.90,
-            awayWin: 1.90
-        },
-        time: 'Hoje, 21:30 BRT'
-    },
-    {
-        id: 'game-3',
-        homeTeam: 'Milwaukee Bucks',
-        awayTeam: 'Phoenix Suns',
-        odds: {
-            homeWin: 2.30,
-            awayWin: 1.70
-        },
-        time: 'Amanhã, 19:00 BRT'
-    },
-    {
-        id: 'game-4',
-        homeTeam: 'Chicago Bulls',
-        awayTeam: 'Miami Heat',
-        odds: {
-            homeWin: 2.10,
-            awayWin: 1.75
-        },
-        time: 'Amanhã, 20:30 BRT'
-    }
-];
+document.addEventListener("DOMContentLoaded", () => {
+  /* ========================================= */
+  /* Módulo de Gerenciamento do Carrossel */
+  /* ========================================= */
+  const Carousel = (carouselSelector) => {
+    const carousel = document.querySelector(carouselSelector)
+    if (!carousel) return // Se o carrossel não existe, pare a execução.
 
-let betSlip = []; // Armazenará as apostas selecionadas
-let stake = 10.00; // Valor inicial da aposta
+    const track = carousel.querySelector(".live-games-track")
+    const prevBtn = carousel.querySelector(".prev")
+    const nextBtn = carousel.querySelector(".next")
+    const cards = Array.from(track.children)
+    const cardWidth = cards[0].offsetWidth + 15 // Largura do card + gap
 
-// Seletores do DOM
-const gamesContainer = document.getElementById('games-container');
-const betList = document.getElementById('bet-list');
-const stakeInput = document.getElementById('stake-input');
-const totalOddsValue = document.getElementById('total-odds-value');
-const potentialReturnValue = document.getElementById('potential-return-value');
-const placeBetButton = document.getElementById('place-bet-button');
+    const updateNavButtons = () => {
+      const currentScroll = track.scrollLeft
+      const maxScroll = track.scrollWidth - track.offsetWidth
 
-// Função para renderizar os jogos no DOM
-function renderGames() {
-    gamesContainer.innerHTML = ''; // Limpa o container antes de adicionar
-    games.forEach(game => {
-        const gameCard = document.createElement('div');
-        gameCard.classList.add('game-card');
-        gameCard.innerHTML = `
-            <h3>${game.homeTeam} <i class="fas fa-versus"></i> ${game.awayTeam}</h3>
-            <p class="game-time">${game.time}</p>
-            <div class="odd-selection">
-                <button class="odd-button" data-game-id="${game.id}" data-team="${game.homeTeam}" data-bet-type="homeWin" data-odd="${game.odds.homeWin}">
-                    ${game.homeTeam} <br> <strong>${game.odds.homeWin.toFixed(2)}</strong>
-                </button>
-                <button class="odd-button" data-game-id="${game.id}" data-team="${game.awayTeam}" data-bet-type="awayWin" data-odd="${game.odds.awayWin}">
-                    ${game.awayTeam} <br> <strong>${game.odds.awayWin.toFixed(2)}</strong>
-                </button>
-            </div>
-        `;
-        gamesContainer.appendChild(gameCard);
-    });
-
-    // Reaplicar a seleção visual se já houver apostas no ticket
-    updateGameCardSelections();
-}
-
-// Função para atualizar a seleção visual nos cards dos jogos
-function updateGameCardSelections() {
-    document.querySelectorAll('.odd-button').forEach(btn => btn.classList.remove('selected'));
-    betSlip.forEach(bet => {
-        const selectedBtn = document.querySelector(`.odd-button[data-game-id="${bet.gameId}"][data-bet-type="${bet.betType}"]`);
-        if (selectedBtn) {
-            selectedBtn.classList.add('selected');
-        }
-    });
-}
-
-// Função para atualizar o ticket de aposta
-function updateBetSlip() {
-    betList.innerHTML = '';
-    let totalOdds = 1.00;
-
-    if (betSlip.length === 0) {
-        betList.innerHTML = '<li class="empty-slip">Nenhuma aposta selecionada.</li>';
-        placeBetButton.disabled = true;
-    } else {
-        betSlip.forEach(bet => {
-            const betItem = document.createElement('li');
-            betItem.innerHTML = `
-                <span>${bet.team} (${bet.odd.toFixed(2)})</span>
-                <button class="remove-bet" data-game-id="${bet.gameId}" aria-label="Remover aposta"><i class="fas fa-times"></i></button>
-            `;
-            betList.appendChild(betItem);
-            totalOdds *= bet.odd;
-        });
-        placeBetButton.disabled = false;
+      prevBtn.style.display = currentScroll > 0 ? "block" : "none"
+      nextBtn.style.display = currentScroll < maxScroll - 1 ? "block" : "none"
     }
 
-    totalOddsValue.textContent = totalOdds.toFixed(2);
-    potentialReturnValue.textContent = (stake * totalOdds).toFixed(2);
-    updateGameCardSelections(); // Garante que a seleção visual esteja sempre correta
-}
+    const init = () => {
+      if (cards.length > 0) {
+        // Navegação com os botões
+        prevBtn.addEventListener("click", () => track.scrollBy({ left: -cardWidth * 2, behavior: "smooth" }))
+        nextBtn.addEventListener("click", () => track.scrollBy({ left: cardWidth * 2, behavior: "smooth" }))
 
-// Event Listener para seleção de odds nos jogos
-gamesContainer.addEventListener('click', (event) => {
-    const target = event.target.closest('.odd-button'); // Garante que pegamos o botão mesmo clicando no texto
-    if (target) {
-        const gameId = target.dataset.gameId;
-        const team = target.dataset.team;
-        const betType = target.dataset.betType;
-        const odd = parseFloat(target.dataset.odd);
+        // Atualizar botões em caso de rolagem manual
+        track.addEventListener("scroll", updateNavButtons)
 
-        const existingBetIndex = betSlip.findIndex(b => b.gameId === gameId);
-
-        if (existingBetIndex > -1) {
-            // Se a aposta já existe para o mesmo jogo
-            if (betSlip[existingBetIndex].betType === betType) {
-                // Se for a mesma aposta, remove (desseleciona)
-                betSlip.splice(existingBetIndex, 1);
-            } else {
-                // Se for outra aposta no mesmo jogo, substitui
-                betSlip[existingBetIndex] = { gameId, team, betType, odd };
-            }
-        } else {
-            // Adiciona nova aposta
-            betSlip.push({ gameId, team, betType, odd });
-        }
-        updateBetSlip();
+        updateNavButtons() // Chamada inicial para mostrar/ocultar botões
+      }
     }
-});
 
-// Event Listener para remover aposta do ticket
-betList.addEventListener('click', (event) => {
-    const target = event.target.closest('.remove-bet');
-    if (target) {
-        const gameIdToRemove = target.dataset.game-id;
-        betSlip = betSlip.filter(bet => bet.gameId !== gameIdToRemove);
-        updateBetSlip();
+    return { init }
+  }
+
+  /* ========================================= */
+  /* Módulo de Gerenciamento do Ticket de Aposta */
+  /* ========================================= */
+  const BetSlipManager = () => {
+    const gamesContainer = document.getElementById("games-container")
+    const betList = document.getElementById("bet-list")
+    const stakeInput = document.getElementById("stake-input")
+    const totalOddsValue = document.getElementById("total-odds-value")
+    const potentialReturnValue = document.getElementById("potential-return-value")
+    const placeBetButton = document.getElementById("place-bet-button")
+
+    let selectedBets = []
+
+    const updateBetSlipUI = () => {
+      betList.innerHTML = ""
+      let totalOdds = 1
+
+      if (selectedBets.length === 0) {
+        betList.innerHTML = '<li class="empty-slip">Nenhuma aposta selecionada.</li>'
+        placeBetButton.disabled = true
+        totalOddsValue.textContent = "1.00"
+        potentialReturnValue.textContent = "0.00"
+        return
+      }
+
+      selectedBets.forEach((bet) => {
+        const listItem = document.createElement("li")
+        listItem.innerHTML = `
+                    <span>${bet.team} - ${bet.odd.toFixed(2)}</span>
+                    <button class="remove-bet" data-game-id="${bet.gameId}"><i class="fas fa-times"></i></button>
+                `
+        betList.appendChild(listItem)
+        totalOdds *= bet.odd
+      })
+
+      const stake = Number.parseFloat(stakeInput.value) || 0
+      const potentialReturn = stake * totalOdds
+
+      totalOddsValue.textContent = totalOdds.toFixed(2)
+      potentialReturnValue.textContent = potentialReturn.toFixed(2)
+      placeBetButton.disabled = false
     }
-});
 
-// Event Listener para o input de valor da aposta
-stakeInput.addEventListener('input', (event) => {
-    const newStake = parseFloat(event.target.value);
-    if (!isNaN(newStake) && newStake >= 1) {
-        stake = newStake;
-    } else if (event.target.value === '') {
-        stake = 0; // Ou defina um valor padrão razoável se o campo estiver vazio
+    const handleGameSelection = (e) => {
+      const button = e.target.closest(".odd-button")
+      if (!button) return
+
+      const gameCard = button.closest(".game-card")
+      const gameId = gameCard.dataset.gameId || `game-${Math.random().toString(16).slice(2)}`
+      gameCard.dataset.gameId = gameId
+
+      const team = button.textContent.split("(")[0].trim()
+      const odd = Number.parseFloat(button.dataset.odd)
+
+      // Remove a seleção anterior do mesmo jogo, se houver
+      selectedBets = selectedBets.filter((bet) => bet.gameId !== gameId)
+      gameCard.querySelectorAll(".odd-button").forEach((btn) => btn.classList.remove("selected"))
+
+      // Adiciona a nova aposta e a classe 'selected'
+      selectedBets.push({ gameId, team, odd })
+      button.classList.add("selected")
+
+      updateBetSlipUI()
     }
-    updateBetSlip();
-});
 
-// Event Listener para fazer a aposta
-placeBetButton.addEventListener('click', () => {
-    if (betSlip.length > 0 && stake > 0) {
-        // Em um sistema real, aqui você enviaria os dados para o backend para processamento
-        alert(`Aposta de R$${stake.toFixed(2)} realizada com sucesso! Retorno potencial: R$${potentialReturnValue.textContent}`);
-        betSlip = []; // Limpa o ticket após a aposta
-        stake = 10.00; // Reset o valor da aposta
-        stakeInput.value = stake.toFixed(2);
-        updateBetSlip();
-    } else if (betSlip.length === 0) {
-        alert('Adicione pelo menos uma aposta ao seu ticket.');
-    } else {
-        alert('Por favor, insira um valor de aposta válido.');
+    const handleBetRemoval = (e) => {
+      const removeButton = e.target.closest(".remove-bet")
+      if (!removeButton) return
+
+      const gameIdToRemove = removeButton.dataset.gameId
+      selectedBets = selectedBets.filter((bet) => bet.gameId !== gameIdToRemove)
+
+      const gameCard = document.querySelector(`[data-game-id="${gameIdToRemove}"]`)
+      if (gameCard) {
+        gameCard.querySelectorAll(".odd-button").forEach((btn) => btn.classList.remove("selected"))
+      }
+
+      updateBetSlipUI()
     }
-});
 
-// Inicializa a aplicação quando o DOM estiver completamente carregado
-document.addEventListener('DOMContentLoaded', () => {
-    renderGames();
-    updateBetSlip();
-    stakeInput.value = stake.toFixed(2); // Garante que o input tenha o valor inicial
-}); 
+    const handlePlaceBet = () => {
+      if (selectedBets.length === 0) return
+
+      alert(`Aposta realizada com sucesso! Retorno Potencial: R$${potentialReturnValue.textContent}`)
+
+      // Limpa o ticket e a seleção dos botões
+      selectedBets = []
+      document.querySelectorAll(".odd-button").forEach((btn) => btn.classList.remove("selected"))
+      updateBetSlipUI()
+    }
+
+    const init = () => {
+      // Delegação de eventos para melhor performance
+      gamesContainer.addEventListener("click", handleGameSelection)
+      betList.addEventListener("click", handleBetRemoval)
+      placeBetButton.addEventListener("click", handlePlaceBet)
+      stakeInput.addEventListener("input", updateBetSlipUI)
+
+      updateBetSlipUI()
+    }
+
+    return { init }
+  }
+
+  // Inicializa os módulos
+  const liveGamesCarousel = Carousel(".live-games-carousel")
+  liveGamesCarousel.init()
+
+  const betSlip = BetSlipManager()
+  betSlip.init()
+})
