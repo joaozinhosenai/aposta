@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Estatísticas detalhadas de jogadores e times de basquete. Análise de desempenho, pontos, assistências, rebotes e mais.">
+    <title>Estatísticas | BasqueteJG</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+          integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
+          crossorigin="anonymous" referrerpolicy="no-referrer">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link" aria-label="Pular para o conteúdo principal">Pular para o conteúdo</a>
+
+    <header class="main-header" role="banner">
+        <div class="header-container container">
+            <div class="logo-section">
+                <a href="index.html" class="logo-link" aria-label="BasqueteJG - Página inicial">
+                    <i class="fas fa-basketball-ball" aria-hidden="true"></i>
+                    <h1 class="logo">BasqueteJG</h1>
+                </a>
+            </div>
+
+            <button class="mobile-menu-toggle" aria-label="Abrir menu de navegação" aria-expanded="false">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+
+            <nav class="main-nav" role="navigation" aria-label="Navegação principal">
+                <ul class="nav-list">
+                    <li><a href="index.html" class="nav-link">
+                        <i class="fas fa-globe-americas" aria-hidden="true"></i>
+                        <span>Países</span>
+                    </a></li>
+                    <li><a href="#" class="nav-link">
+                        <i class="fas fa-trophy" aria-hidden="true"></i>
+                        <span>Ligas</span>
+                    </a></li>
+                    <li><a href="estatisticas.html" class="nav-link active" aria-current="page">
+                        <i class="fas fa-chart-bar" aria-hidden="true"></i>
+                        <span>Estatísticas</span>
+                    </a></li>
+                    <li><a href="#" class="nav-link">
+                        <i class="fas fa-user-circle" aria-hidden="true"></i>
+                        <span>Minha Conta</span>
+                    </a></li>
+                    <li><a href="#" class="nav-link">
+                        <i class="fas fa-question-circle" aria-hidden="true"></i>
+                        <span>Ajuda</span>
+                    </a></li>
+                </ul>
+            </nav>
+
+            <div class="auth-buttons">
+                <button class="btn btn-login" type="button">
+                    <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
+                    <span>Entrar</span>
+                </button>
+                <button class="btn btn-signup" type="button">
+                    <i class="fas fa-user-plus" aria-hidden="true"></i>
+                    <span>Registrar</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="mobile-nav-overlay">
+            <nav class="mobile-nav" role="navigation" aria-label="Menu de navegação móvel">
+                <ul class="mobile-nav-list">
+                    <li><a href="index.html" class="mobile-nav-link">
+                        <i class="fas fa-globe-americas" aria-hidden="true"></i>
+                        Países
+                    </a></li>
+                    <li><a href="#" class="mobile-nav-link">
+                        <i class="fas fa-trophy" aria-hidden="true"></i>
+                        Ligas
+                    </a></li>
+                    <li><a href="estatisticas.html" class="mobile-nav-link">
+                        <i class="fas fa-chart-bar" aria-hidden="true"></i>
+                        Estatísticas
+                    </a></li>
+                    <li><a href="#" class="mobile-nav-link">
+                        <i class="fas fa-user-circle" aria-hidden="true"></i>
+                        Minha Conta
+                    </a></li>
+                    <li><a href="#" class="mobile-nav-link">
+                        <i class="fas fa-question-circle" aria-hidden="true"></i>
+                        Ajuda
+                    </a></li>
+                </ul>
+                <div class="mobile-auth-buttons">
+                    <button class="btn btn-login mobile-btn">Entrar</button>
+                    <button class="btn btn-signup mobile-btn">Registrar</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content" class="main-content" role="main">
+        <div class="container">
+            <section class="stats-section" aria-labelledby="stats-page-title">
+                <div class="section-header">
+                    <h2 id="stats-page-title" class="section-title">
+                        <i class="fas fa-chart-line" aria-hidden="true"></i>
+                        Estatísticas de Basquete
+                    </h2>
+                </div>
+
+                <div class="stats-tabs">
+                    <button class="tab-button active" data-tab="players">Jogadores</button>
+                    <button class="tab-button" data-tab="teams">Times</button>
+                </div>
+
+                <div id="stats-filters" class="filters-container">
+                    <div class="filter-group">
+                        <label for="league-select" class="filter-label">Liga:</label>
+                        <select id="league-select" class="filter-select" aria-label="Filtrar por liga"></select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="season-select" class="filter-label">Temporada:</label>
+                        <select id="season-select" class="filter-select" aria-label="Filtrar por temporada"></select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="search-player-input" class="visually-hidden">Buscar Jogador/Time</label>
+                        <input type="text" id="search-player-input" class="search-input" placeholder="Buscar jogador/time...">
+                        <i class="fas fa-search search-icon" aria-hidden="true"></i>
+                    </div>
+                </div>
+
+                <div id="loading-stats" class="loading-indicator hidden" aria-hidden="true">
+                    <div class="spinner"></div>
+                    <span>Carregando estatísticas...</span>
+                </div>
+
+                <div id="stats-content" class="stats-content-area">
+                    <div id="players-stats-container" class="stats-table-container">
+                        <table class="stats-table">
+                            <thead>
+                                <tr>
+                                    <th>Posição</th>
+                                    <th>Jogador</th>
+                                    <th>Time</th>
+                                    <th>PTS</th>
+                                    <th>REB</th>
+                                    <th>AST</th>
+                                    <th>TO</th>
+                                </tr>
+                            </thead>
+                            <tbody id="players-stats-body">
+                                </tbody>
+                        </table>
+                    </div>
+
+                    <div id="teams-stats-container" class="stats-table-container hidden">
+                        <table class="stats-table">
+                            <thead>
+                                <tr>
+                                    <th>Posição</th>
+                                    <th>Time</th>
+                                    <th>Vitórias</th>
+                                    <th>Derrotas</th>
+                                    <th>PCT</th>
+                                    <th>PF</th>
+                                    <th>PA</th>
+                                </tr>
+                            </thead>
+                            <tbody id="teams-stats-body">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="no-stats-results" class="no-results hidden">
+                    <i class="fas fa-chart-line" aria-hidden="true"></i>
+                    <h3>Nenhuma estatística encontrada</h3>
+                    <p>Tente selecionar outra liga ou temporada.</p>
+                </div>
+
+                <div class="pagination">
+                    <button id="prev-page-btn" class="btn btn-pagination" disabled>Anterior</button>
+                    <span id="page-info">Página 1</span>
+                    <button id="next-page-btn" class="btn btn-pagination">Próximo</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="main-footer" role="contentinfo">
+        </footer>
+
+    <script src="script.js"></script>
+    <script src="estatisticas.js"></script>
+</body>
+</html>
