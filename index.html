@@ -3,203 +3,422 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basquetebol Bets | A melhor experiência em apostas de basquete</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <meta name="description" content="A melhor plataforma de apostas em basquete online. Países e ligas de basquete com as melhores odds do mercado.">
+    <title>BasqueteJG | A melhor experiência em apostas de basquete</title>
+    
+    <!-- Preconnect para melhor performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+          integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
+          crossorigin="anonymous" referrerpolicy="no-referrer">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-link" aria-label="Pular para o conteúdo principal">Pular para o conteúdo</a>
 
-    <header class="main-header">
+    <!-- Header -->
+    <header class="main-header" role="banner">
         <div class="header-container container">
-            <a href="#" class="logo-link">
-                <i class="fas fa-basketball-ball"></i>
-                <h1 class="logo">Basquetebol Bets</h1>
-            </a>
-            <nav class="main-nav">
+            <!-- Logo -->
+            <div class="logo-section">
+                <a href="#" class="logo-link" aria-label="BasqueteJG - Página inicial">
+                    <i class="fas fa-basketball-ball" aria-hidden="true"></i>
+                    <h1 class="logo">BasqueteJG</h1>
+                </a>
+            </div>
+
+            <!-- Mobile menu toggle -->
+            <button class="mobile-menu-toggle" aria-label="Abrir menu de navegação" aria-expanded="false">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+
+            <!-- Navigation -->
+            <nav class="main-nav" role="navigation" aria-label="Navegação principal">
                 <ul class="nav-list">
-                    <li><a href="#" class="nav-link active"><i class="fas fa-chart-line"></i> Apostas ao Vivo</a></li>
-                    <li><a href="#" class="nav-link"><i class="fas fa-calendar-alt"></i> Próximos Jogos</a></li>
-                    <li><a href="#" class="nav-link"><i class="fas fa-trophy"></i> Competições</a></li>
-                    <li><a href="#" class="nav-link"><i class="fas fa-user-circle"></i> Minha Conta</a></li>
-                    <li><a href="#" class="nav-link"><i class="fas fa-question-circle"></i> Ajuda</a></li>
+                    <li><a href="#" class="nav-link active" aria-current="page">
+                        <i class="fas fa-globe-americas" aria-hidden="true"></i>
+                        <span>Países</span>
+                    </a></li>
+                    <li><a href="#" class="nav-link">
+                        <i class="fas fa-trophy" aria-hidden="true"></i>
+                        <span>Ligas</span>
+                    </a></li>
+                    <li><a href="#" class="nav-link">
+                        <i class="fas fa-chart-bar" aria-hidden="true"></i>
+                        <span>Estatísticas</span>
+                    </a></li>
+                    <li><a href="#" class="nav-link">
+                        <i class="fas fa-user-circle" aria-hidden="true"></i>
+                        <span>Minha Conta</span>
+                    </a></li>
+                    <li><a href="#" class="nav-link">
+                        <i class="fas fa-question-circle" aria-hidden="true"></i>
+                        <span>Ajuda</span>
+                    </a></li>
                 </ul>
             </nav>
+
+            <!-- Authentication buttons -->
             <div class="auth-buttons">
-                <button class="btn btn-login">Entrar</button>
-                <button class="btn btn-signup">Registrar</button>
+                <button class="btn btn-login" type="button">
+                    <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
+                    <span>Entrar</span>
+                </button>
+                <button class="btn btn-signup" type="button">
+                    <i class="fas fa-user-plus" aria-hidden="true"></i>
+                    <span>Registrar</span>
+                </button>
             </div>
+        </div>
+
+        <!-- Mobile Navigation Overlay -->
+        <div class="mobile-nav-overlay">
+            <nav class="mobile-nav" role="navigation" aria-label="Menu de navegação móvel">
+                <ul class="mobile-nav-list">
+                    <li><a href="#" class="mobile-nav-link">
+                        <i class="fas fa-globe-americas" aria-hidden="true"></i>
+                        Países
+                    </a></li>
+                    <li><a href="#" class="mobile-nav-link">
+                        <i class="fas fa-trophy" aria-hidden="true"></i>
+                        Ligas
+                    </a></li>
+                    <li><a href="#" class="mobile-nav-link">
+                        <i class="fas fa-chart-bar" aria-hidden="true"></i>
+                        Estatísticas
+                    </a></li>
+                    <li><a href="#" class="mobile-nav-link">
+                        <i class="fas fa-user-circle" aria-hidden="true"></i>
+                        Minha Conta
+                    </a></li>
+                    <li><a href="#" class="mobile-nav-link">
+                        <i class="fas fa-question-circle" aria-hidden="true"></i>
+                        Ajuda
+                    </a></li>
+                </ul>
+                <div class="mobile-auth-buttons">
+                    <button class="btn btn-login mobile-btn">Entrar</button>
+                    <button class="btn btn-signup mobile-btn">Registrar</button>
+                </div>
+            </nav>
         </div>
     </header>
 
-    <main class="main-content-area">
-        <div class="content-container container">
-
-            <section class="hero-banner-static">
-                <img src="https://i.ibb.co/L542d1q/lakers-celtics.jpg" alt="Jogo de Basquete em Destaque" class="banner-image">
-                <div class="banner-content">
-                    <h2>🏀 Super Clássico: Lakers vs Celtics ao Vivo!</h2>
-                    <p>Acompanhe cada lance e faça suas apostas com as melhores odds do mercado.</p>
-                    <button class="btn btn-hero">Apostar Agora!</button>
-                </div>
-            </section>
-
-            <section class="live-games-section">
-                <div class="section-header">
-                    <h2><i class="fas fa-globe"></i> Jogos Ao Vivo</h2>
-                </div>
-                <div class="live-games-carousel">
-                    <button class="carousel-control-mini prev" aria-label="Anterior"><i class="fas fa-chevron-left"></i></button>
-                    <div class="live-games-track">
-                        <div class="live-game-card">
-                            <img src="https://i.ibb.co/S66n2Wn/logo-lakers.png" alt="Lakers" class="live-game-logo">
-                            <span class="live-game-score">85 - 78</span>
-                            <img src="https://i.ibb.co/3rJ5BvJ/logo-celtics.png" alt="Celtics" class="live-game-logo">
-                            <div class="live-game-details">
-                                <span class="game-time">Q3 - 05:30</span>
-                                <button class="btn-live-bet">Apostar</button>
-                            </div>
-                        </div>
-                        <div class="live-game-card">
-                            <img src="https://i.ibb.co/W2z0p5X/logo-warriors.png" alt="Warriors" class="live-game-logo">
-                            <span class="live-game-score">102 - 99</span>
-                            <img src="https://i.ibb.co/cNMt687/logo-rockets.png" alt="Rockets" class="live-game-logo">
-                            <div class="live-game-details">
-                                <span class="game-time">Q4 - 02:15</span>
-                                <button class="btn-live-bet">Apostar</button>
-                            </div>
-                        </div>
-                        <div class="live-game-card">
-                            <img src="https://i.ibb.co/dMvL3g4/logo-bulls.png" alt="Bulls" class="live-game-logo">
-                            <span class="live-game-score">55 - 60</span>
-                            <img src="https://i.ibb.co/rQ296S2/logo-knicks.png" alt="Knicks" class="live-game-logo">
-                            <div class="live-game-details">
-                                <span class="game-time">Intervalo</span>
-                                <button class="btn-live-bet">Apostar</button>
-                            </div>
-                        </div>
-                        <div class="live-game-card">
-                            <img src="https://i.ibb.co/M9qH170/logo-heat.png" alt="Heat" class="live-game-logo">
-                            <span class="live-game-score">70 - 68</span>
-                            <img src="https://i.ibb.co/YyJ2vWp/logo-raptors.png" alt="Raptors" class="live-game-logo">
-                            <div class="live-game-details">
-                                <span class="game-time">Q3 - 08:45</span>
-                                <button class="btn-live-bet">Apostar</button>
-                            </div>
+    <!-- Main Content -->
+    <main id="main-content" class="main-content" role="main">
+        <div class="container">
+            <!-- Hero Section -->
+            <section class="hero-section" aria-labelledby="hero-title">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h2 id="hero-title" class="hero-title">
+                            <i class="fas fa-basketball-ball" aria-hidden="true"></i>
+                            Basquete Mundial
+                        </h2>
+                        <p class="hero-description">
+                            Explore países e ligas de basquete de todo o mundo. Dados em tempo real das melhores competições internacionais.
+                        </p>
+                        <button class="btn btn-hero" type="button" id="load-countries-btn">
+                            <i class="fas fa-play" aria-hidden="true"></i>
+                            Explorar Países
+                        </button>
+                    </div>
+                    <div class="hero-image">
+                        <div class="hero-graphic">
+                            <i class="fas fa-basketball-ball hero-icon" aria-hidden="true"></i>
+                            <div class="pulse-effect"></div>
                         </div>
                     </div>
-                    <button class="carousel-control-mini next" aria-label="Próximo"><i class="fas fa-chevron-right"></i></button>
                 </div>
             </section>
 
+            <!-- API Status -->
+            <div id="api-status" class="api-status" aria-live="polite">
+                <div class="status-indicator">
+                    <i class="fas fa-wifi" aria-hidden="true"></i>
+                    <span id="status-text">Conectando à API...</span>
+                </div>
+            </div>
+
+            <!-- Loading indicator -->
+            <div id="loading-indicator" class="loading-indicator" aria-hidden="true">
+                <div class="spinner"></div>
+                <span>Carregando dados do basquete...</span>
+            </div>
+
+            <!-- Error message -->
+            <div id="error-message" class="error-message" role="alert" aria-hidden="true">
+                <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                <div class="error-content">
+                    <h3>Erro ao carregar dados</h3>
+                    <p id="error-text">Não foi possível conectar com a API de basquete.</p>
+                    <p class="error-details">Verifique sua chave da API RapidAPI.</p>
+                </div>
+                <button class="btn btn-retry" type="button" id="retry-btn">Tentar Novamente</button>
+            </div>
+
+            <!-- Main Layout -->
             <div class="main-layout">
-                <div class="game-listings-container">
-                    <section class="game-listings">
-                        <div class="section-header">
-                            <h2><i class="fas fa-basketball-ball"></i> Todos os Jogos</h2>
-                            <div class="filters">
-                                <label for="league-filter">Liga:</label>
-                                <select id="league-filter">
-                                    <option value="all">Todas</option>
-                                    <option value="nba">NBA</option>
-                                    <option value="euroleague">EuroLeague</option>
+                <!-- Countries Section -->
+                <section class="games-section" aria-labelledby="countries-title">
+                    <div class="section-header">
+                        <h2 id="countries-title" class="section-title">
+                            <i class="fas fa-globe-americas" aria-hidden="true"></i>
+                            Países do Basquete
+                        </h2>
+                        
+                        <!-- Filters -->
+                        <div class="filters-container">
+                            <div class="filter-group">
+                                <label for="region-filter" class="filter-label">Região:</label>
+                                <select id="region-filter" class="filter-select" aria-label="Filtrar por região">
+                                    <option value="all">Todas as Regiões</option>
+                                    <option value="america">América</option>
+                                    <option value="europe">Europa</option>
+                                    <option value="asia">Ásia</option>
+                                    <option value="africa">África</option>
+                                    <option value="oceania">Oceania</option>
                                 </select>
-                                <input type="text" id="search-bar" placeholder="Buscar por time...">
+                            </div>
+                            
+                            <div class="search-container">
+                                <label for="search-input" class="visually-hidden">Buscar países</label>
+                                <input type="text" 
+                                       id="search-input" 
+                                       class="search-input" 
+                                       placeholder="Buscar países..."
+                                       aria-label="Buscar países">
+                                <i class="fas fa-search search-icon" aria-hidden="true"></i>
+                            </div>
+
+                            <div class="view-controls">
+                                <button class="btn btn-view active" data-view="grid" aria-label="Visualização em grade">
+                                    <i class="fas fa-th" aria-hidden="true"></i>
+                                </button>
+                                <button class="btn btn-view" data-view="list" aria-label="Visualização em lista">
+                                    <i class="fas fa-list" aria-hidden="true"></i>
+                                </button>
                             </div>
                         </div>
-                        <div id="games-container" class="games-grid">
-                            <div class="game-card">
-                                <div class="teams-container">
-                                    <div class="team-info">
-                                        <img src="https://i.ibb.co/S66n2Wn/logo-lakers.png" alt="Logo Lakers">
-                                        <h3>Lakers</h3>
-                                    </div>
-                                    <span class="vs-text">vs</span>
-                                    <div class="team-info">
-                                        <img src="https://i.ibb.co/3rJ5BvJ/logo-celtics.png" alt="Logo Celtics">
-                                        <h3>Celtics</h3>
-                                    </div>
-                                </div>
-                                <div class="odd-selection">
-                                    <button class="odd-button" data-odd="1.95" data-team="Lakers">Vitória Lakers (1.95)</button>
-                                    <button class="odd-button" data-odd="1.85" data-team="Celtics">Vitória Celtics (1.85)</button>
-                                </div>
-                            </div>
-                            </div>
-                    </section>
-                </div>
-    
-                <aside class="bet-slip-container">
-                    <div class="bet-slip-header">
-                        <h2><i class="fas fa-ticket-alt"></i> Ticket de Aposta</h2>
                     </div>
-                    <div id="bet-slip-content" class="bet-slip-content">
-                        <ul id="bet-list" class="bet-list">
-                            <li class="empty-slip">Nenhuma aposta selecionada.</li>
-                        </ul>
-                        <div class="bet-summary">
-                            <div class="summary-item">
-                                <span>Valor da Aposta:</span>
-                                <input type="number" id="stake-input" value="10.00" min="1" step="0.5">
+
+                    <!-- Countries Grid -->
+                    <div id="countries-container" class="games-grid" role="list">
+                        <!-- Countries will be populated by JavaScript -->
+                    </div>
+
+                    <!-- No results message -->
+                    <div id="no-results" class="no-results" aria-hidden="true">
+                        <i class="fas fa-search" aria-hidden="true"></i>
+                        <h3>Nenhum país encontrado</h3>
+                        <p>Tente ajustar os filtros ou buscar por outros termos.</p>
+                    </div>
+                </section>
+
+                <!-- Statistics Panel -->
+                <aside class="stats-panel" role="complementary" aria-labelledby="stats-title">
+                    <div class="stats-header">
+                        <h2 id="stats-title" class="stats-title">
+                            <i class="fas fa-chart-bar" aria-hidden="true"></i>
+                            Estatísticas
+                        </h2>
+                        <button class="btn-refresh-stats" type="button" aria-label="Atualizar estatísticas">
+                            <i class="fas fa-sync-alt" aria-hidden="true"></i>
+                        </button>
+                    </div>
+
+                    <div class="stats-content">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-globe" aria-hidden="true"></i>
                             </div>
-                            <div class="summary-item total-odds-display">
-                                <span>Odds Combinadas:</span>
-                                <span id="total-odds-value">1.00</span>
-                            </div>
-                            <div class="summary-item potential-return-display">
-                                <span>Retorno Potencial:</span>
-                                <span id="potential-return-value">0.00</span>
+                            <div class="stat-info">
+                                <span class="stat-label">Total de Países</span>
+                                <span class="stat-value" id="total-countries">-</span>
                             </div>
                         </div>
-                        <button id="place-bet-button" class="btn btn-place-bet" disabled>Fazer Aposta</button>
-                        <p class="responsible-gambling">Aposte com responsabilidade. Jogue apenas o que pode perder.</p>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-eye" aria-hidden="true"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-label">Exibindo</span>
+                                <span class="stat-value" id="visible-countries">-</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-trophy" aria-hidden="true"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-label">Ligas Ativas</span>
+                                <span class="stat-value" id="active-leagues">-</span>
+                            </div>
+                        </div>
+
+                        <div class="api-info">
+                            <h3>Informações da API</h3>
+                            <div class="api-details">
+                                <div class="api-item">
+                                    <span class="api-label">Fonte:</span>
+                                    <span class="api-value">RapidAPI Basketball</span>
+                                </div>
+                                <div class="api-item">
+                                    <span class="api-label">Status:</span>
+                                    <span class="api-value" id="api-connection-status">
+                                        <span class="status-dot"></span>
+                                        Conectado
+                                    </span>
+                                </div>
+                                <div class="api-item">
+                                    <span class="api-label">Última Atualização:</span>
+                                    <span class="api-value" id="last-update">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="quick-actions">
+                            <h3>Ações Rápidas</h3>
+                            <button class="btn btn-action" type="button" id="export-data">
+                                <i class="fas fa-download" aria-hidden="true"></i>
+                                Exportar Dados
+                            </button>
+                            <button class="btn btn-action" type="button" id="view-favorites">
+                                <i class="fas fa-star" aria-hidden="true"></i>
+                                Favoritos
+                            </button>
+                        </div>
                     </div>
                 </aside>
             </div>
         </div>
     </main>
 
-    <footer class="main-footer">
-        <div class="footer-container container">
-            <div class="footer-links">
-                <div class="footer-column">
-                    <h4>Sobre Nós</h4>
-                    <ul>
-                        <li><a href="#">Quem Somos</a></li>
-                        <li><a href="#">Carreiras</a></li>
-                        <li><a href="#">Termos e Condições</a></li>
-                        <li><a href="#">Política de Privacidade</a></li>
-                    </ul>
+    <!-- Footer -->
+    <footer class="main-footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-basketball-ball" aria-hidden="true"></i>
+                        <span>BasqueteJG</span>
+                    </div>
+                    <p class="footer-description">
+                        A melhor plataforma para explorar o basquete mundial. 
+                        Dados atualizados e informações detalhadas de países e ligas.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-link" aria-label="Facebook">
+                            <i class="fab fa-facebook-f" aria-hidden="true"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Twitter">
+                            <i class="fab fa-twitter" aria-hidden="true"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Instagram">
+                            <i class="fab fa-instagram" aria-hidden="true"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="YouTube">
+                            <i class="fab fa-youtube" aria-hidden="true"></i>
+                        </a>
+                    </div>
                 </div>
-                <div class="footer-column">
-                    <h4>Apostas</h4>
-                    <ul>
-                        <li><a href="#">Regras das Apostas</a></li>
-                        <li><a href="#">Apostas ao Vivo</a></li>
-                        <li><a href="#">Resultados</a></li>
-                        <li><a href="#">Estatísticas</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h4>Suporte</h4>
-                    <ul>
-                        <li><a href="#">FAQ</a></li>
-                        <li><a href="#">Entre em Contato</a></li>
-                        <li><a href="#">Jogo Responsável</a></li>
-                    </ul>
+
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h3 class="footer-column-title">Plataforma</h3>
+                        <ul class="footer-link-list">
+                            <li><a href="#" class="footer-link">Sobre Nós</a></li>
+                            <li><a href="#" class="footer-link">Como Funciona</a></li>
+                            <li><a href="#" class="footer-link">API</a></li>
+                            <li><a href="#" class="footer-link">Blog</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h3 class="footer-column-title">Basquete</h3>
+                        <ul class="footer-link-list">
+                            <li><a href="#" class="footer-link">Países</a></li>
+                            <li><a href="#" class="footer-link">Ligas</a></li>
+                            <li><a href="#" class="footer-link">Times</a></li>
+                            <li><a href="#" class="footer-link">Estatísticas</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h3 class="footer-column-title">Suporte</h3>
+                        <ul class="footer-link-list">
+                            <li><a href="#" class="footer-link">Central de Ajuda</a></li>
+                            <li><a href="#" class="footer-link">Contato</a></li>
+                            <li><a href="#" class="footer-link">Documentação</a></li>
+                            <li><a href="#" class="footer-link">FAQ</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h3 class="footer-column-title">Legal</h3>
+                        <ul class="footer-link-list">
+                            <li><a href="#" class="footer-link">Política de Privacidade</a></li>
+                            <li><a href="#" class="footer-link">Termos de Uso</a></li>
+                            <li><a href="#" class="footer-link">Cookies</a></li>
+                            <li><a href="#" class="footer-link">Licenças</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-            <div class="social-media">
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-            </div>
-            <div class="copyright">
-                <p>&copy; 2025 Basquetebol Bets. Todos os direitos reservados. 18+</p>
+
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <p class="copyright">
+                        © 2024 BasqueteJG. Todos os direitos reservados.
+                    </p>
+                    <div class="footer-badges">
+                        <div class="api-badge">
+                            <i class="fas fa-code" aria-hidden="true"></i>
+                            <span>Powered by RapidAPI</span>
+                        </div>
+                        <div class="security-badge">
+                            <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                            <span>Dados Seguros</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </footer>
 
+    <!-- Country Modal -->
+    <div id="country-modal" class="modal" aria-hidden="true">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title" class="modal-title">Detalhes do País</h3>
+                <button class="modal-close" type="button" aria-label="Fechar modal">
+                    <i class="fas fa-times" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notifications -->
+    <div id="toast-container" class="toast-container" aria-live="polite" aria-label="Notificações"></div>
+
+    <!-- JavaScript -->
     <script src="script.js"></script>
 </body>
 </html>
