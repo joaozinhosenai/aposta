@@ -45,7 +45,6 @@ CSS3
 
 JavaScript (Vanilla ou Frameworks, se aplicável)
 
-[Outras tecnologias que você usou, como Bootstrap, Firebase, Node.js etc.]
 
 📌 Futuras Melhorias
 
