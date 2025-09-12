@@ -1,0 +1,51 @@
+<div id="login-modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+        <header class="modal-header">
+            <h3 id="modal-title" class="modal-title">Acessar Minha Conta</h3>
+            <button class="modal-close" aria-label="Fechar modal de login" type="button">
+                <i class="fas fa-times"></i>
+            </button>
+        </header>
+        <div class="modal-body">
+            <form id="login-form" class="login-form">
+                <div class="form-group">
+                    <label for="login-email" class="form-label">Email</label>
+                    <div class="input-icon-wrapper">
+                        <i class="fas fa-at icon"></i>
+                        <input type="email" id="login-email" class="form-input" placeholder="seu-email@exemplo.com" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="login-password" class="form-label">Senha</label>
+                    <div class="input-icon-wrapper">
+                        <i class="fas fa-lock icon"></i>
+                        <input type="password" id="login-password" class="form-input" placeholder="Sua senha secreta" required>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <a href="#" class="forgot-password">Esqueceu a senha?</a>
+                    <button type="submit" class="btn btn-login-submit">
+                        <i class="fas fa-sign-in-alt"></i> Entrar
+                    </button>
+                </div>
+            </form>
+            <div class="separator">
+                <hr>
+                <span>ou</span>
+                <hr>
+            </div>
+            <div class="social-login">
+                <button type="button" class="btn btn-social btn-google">
+                    <i class="fab fa-google"></i> Continuar com Google
+                </button>
+                <button type="button" class="btn btn-social btn-facebook">
+                    <i class="fab fa-facebook-f"></i> Continuar com Facebook
+                </button>
+            </div>
+            <div class="signup-link-container">
+                <p>Não tem uma conta? <a href="#" class="signup-link">Registre-se</a></p>
+            </div>
+        </div>
+    </div>
+</div> 
