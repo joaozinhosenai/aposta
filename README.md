@@ -1,4 +1,4 @@
-🎰 ApostasJG - O Seu Portal de Apostas Online
+🎰 betpro - O Seu Portal de Apostas Online
 📜 Sobre o Projeto
 
 ApostasJG é uma plataforma de apostas online criada com o objetivo de oferecer uma experiência interativa, segura e envolvente para usuários que gostam de testar a sorte, desafiar probabilidades e, quem sabe, faturar alto!
