@@ -1,7 +1,7 @@
 🎰 betpro - O Seu Portal de Apostas Online
 📜 Sobre o Projeto
 
-ApostasJG é uma plataforma de apostas online criada com o objetivo de oferecer uma experiência interativa, segura e envolvente para usuários que gostam de testar a sorte, desafiar probabilidades e, quem sabe, faturar alto!
+betpro é uma plataforma de apostas online criada com o objetivo de oferecer uma experiência interativa, segura e envolvente para usuários que gostam de testar a sorte, desafiar probabilidades e, quem sabe, faturar alto!
 
 Este projeto foi desenvolvido como parte do meu aprendizado em desenvolvimento web, unindo prática de tecnologias front-end e back-end com um tema dinâmico e popular: apostas online.
 
