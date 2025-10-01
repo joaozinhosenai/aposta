@@ -13,7 +13,7 @@ A sigla JG representa as iniciais do meu nome, simbolizando a personalização e
 
 🎯 Objetivo do Site
 
-O ApostasJG tem como objetivo:
+O betpro tem como objetivo:
 
 Simular apostas em diversos tipos de jogos (esportes, roleta, dados, entre outros)
 
