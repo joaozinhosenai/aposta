@@ -1,801 +1,673 @@
-// ===================================
-// Configuração da API Basketball
-// ===================================
-
-const API_CONFIG = {
-    baseURL: 'https://api-basketball.p.rapidapi.com',
-    headers: {
-        'X-RapidAPI-Key': 'SUA_CHAVE_RAPIDAPI_AQUI', // IMPORTANTE: Substitua pela sua chave
-        'X-RapidAPI-Host': 'api-basketball.p.rapidapi.com'
-    },
-    endpoints: {
-        countries: '/countries',
-        leagues: '/leagues',
-        seasons: '/seasons',
-        teams: '/teams'
-    }
+// ===== CONFIGURAÇÕES =====
+const CONFIG = {
+    INITIAL_BALANCE: 1000,
+    MIN_BET: 10,
+    API_TIMEOUT: 10000,
+    RETRY_ATTEMPTS: 3,
+    AUTO_REFRESH: 30000 // 30 segundos
 };
 
-// Estado global da aplicação
-const AppState = {
-    countries: [],
-    filteredCountries: [],
-    favorites: new Set(JSON.parse(localStorage.getItem('favoriteCountries') || '[]')),
-    currentView: 'grid',
-    isLoading: false,
-    apiConnected: false,
-    lastUpdate: null
+const ERROR_CODES = {
+    API_TIMEOUT: 'ERR_001',
+    API_UNAVAILABLE: 'ERR_002',
+    INVALID_DATA: 'ERR_003',
+    INSUFFICIENT_BALANCE: 'ERR_004',
+    MATCH_STARTED: 'ERR_005',
+    NETWORK_ERROR: 'ERR_006'
 };
 
-// ===================================
-// Utilidades
-// ===================================
-
-const Utils = {
-    formatDate: (date) => {
-        return new Intl.DateTimeFormat('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        }).format(date);
-    },
-
-    debounce: (func, wait) => {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    },
-
-    showToast: (message, type = 'info', duration = 4000) => {
-        const toastContainer = document.getElementById('toast-container');
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-
-        const iconMap = {
-            success: 'fas fa-check-circle',
-            error: 'fas fa-exclamation-circle',
-            warning: 'fas fa-exclamation-triangle',
-            info: 'fas fa-info-circle'
-        };
-
-        toast.innerHTML = `
-            <i class="${iconMap[type]}" aria-hidden="true"></i>
-            <div class="toast-content">
-                <div class="toast-message">${message}</div>
-            </div>
-            <button class="toast-close" type="button" aria-label="Fechar notificação">
-                <i class="fas fa-times" aria-hidden="true"></i>
-            </button>
-        `;
-
-        toastContainer.appendChild(toast);
-
-        // Auto remover
-        setTimeout(() => {
-            if (toast.parentNode) {
-                toast.classList.add('hiding');
-                setTimeout(() => toast.remove(), 300);
-            }
-        }, duration);
-
-        // Fechar manualmente
-        toast.querySelector('.toast-close').addEventListener('click', () => {
-            toast.classList.add('hiding');
-            setTimeout(() => toast.remove(), 300);
-        });
-    },
-
-    getCountryFlag: (countryCode) => {
-        // Retorna um emoji de bandeira baseado no código do país
-        if (!countryCode || countryCode.length !== 2) return '🏀';
-        
-        const flagOffset = 0x1F1E6;
-        const asciiOffset = 0x41;
-        const firstChar = countryCode.codePointAt(0) - asciiOffset + flagOffset;
-        const secondChar = countryCode.codePointAt(1) - asciiOffset + flagOffset;
-        
-        return String.fromCodePoint(firstChar) + String.fromCodePoint(secondChar);
-    },
-
-    getRegionByCountry: (countryName) => {
-        const regions = {
-            america: ['United States', 'Canada', 'Brazil', 'Argentina', 'Mexico', 'Chile', 'Colombia', 'Venezuela', 'Peru', 'Uruguay'],
-            europe: ['Spain', 'France', 'Italy', 'Germany', 'United Kingdom', 'Russia', 'Turkey', 'Greece', 'Serbia', 'Croatia'],
-            asia: ['China', 'Japan', 'South Korea', 'Philippines', 'India', 'Iran', 'Israel', 'Lebanon', 'Jordan', 'Kazakhstan'],
-            africa: ['Nigeria', 'Egypt', 'South Africa', 'Morocco', 'Tunisia', 'Angola', 'Senegal', 'Mali', 'Cameroon', 'Rwanda'],
-            oceania: ['Australia', 'New Zealand', 'Fiji', 'Papua New Guinea', 'Solomon Islands']
-        };
-
-        for (const [region, countries] of Object.entries(regions)) {
-            if (countries.some(country => countryName.toLowerCase().includes(country.toLowerCase()))) {
-                return region;
-            }
-        }
-        return 'other';
-    }
+// ===== ESTADO DA APLICAÇÃO =====
+const state = {
+    balance: CONFIG.INITIAL_BALANCE,
+    currentBet: null,
+    matches: [],
+    bettingHistory: [],
+    stats: { totalBets: 0, wonBets: 0, totalProfit: 0 },
+    filters: { sport: 'all', league: 'all', status: 'all', odd: 'all', search: '' },
+    historyFilter: 'all',
+    theme: 'dark',
+    autoRefreshInterval: null
 };
 
-// ===================================
-// API Manager
-// ===================================
+// ===== INICIALIZAÇÃO =====
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('🎰 BetPro v2.0 iniciado');
+    loadFromStorage();
+    updateUI();
+    setupEventListeners();
+    loadMatches();
+    startAutoRefresh();
+});
 
-class APIManager {
-    static async request(endpoint, params = {}) {
-        const url = new URL(API_CONFIG.baseURL + endpoint);
-        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
-
-        try {
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: API_CONFIG.headers
-            });
-
-            if (!response.ok) {
-                throw new Error(`API Error: ${response.status} ${response.statusText}`);
-            }
-
-            const data = await response.json();
-            AppState.apiConnected = true;
-            AppState.lastUpdate = new Date();
-            
-            return data;
-        } catch (error) {
-            AppState.apiConnected = false;
-            console.error('API Request failed:', error);
-            throw error;
+// ===== PERSISTÊNCIA DE DADOS =====
+function loadFromStorage() {
+    try {
+        const storedData = localStorage.getItem('betProData');
+        if (storedData) {
+            const data = JSON.parse(storedData);
+            state.balance = data.balance || CONFIG.INITIAL_BALANCE;
+            state.bettingHistory = data.history || [];
+            state.stats = data.stats || state.stats;
         }
+    } catch (error) {
+        console.error('❌ Erro ao carregar dados do localStorage:', error);
     }
+}
 
-    static async getCountries() {
-        try {
-            const response = await this.request(API_CONFIG.endpoints.countries);
-            return response.response || response;
-        } catch (error) {
-            Utils.showToast('Erro ao carregar países da API', 'error');
-            throw error;
-        }
+function saveToStorage() {
+    try {
+        const dataToSave = {
+            balance: state.balance,
+            history: state.bettingHistory,
+            stats: state.stats,
+            lastUpdate: Date.now()
+        };
+        localStorage.setItem('betProData', JSON.stringify(dataToSave));
+    } catch (error) {
+        console.error('❌ Erro ao salvar dados no localStorage:', error);
     }
+}
 
-    static async getLeagues(countryCode) {
-        try {
-            const response = await this.request(API_CONFIG.endpoints.leagues, {
-                country: countryCode
-            });
-            return response.response || response;
-        } catch (error) {
-            Utils.showToast(`Erro ao carregar ligas para ${countryCode}`, 'error');
-            throw error;
-        }
-    }
+// ===== CARREGAMENTO DE PARTIDAS =====
+async function loadMatches(attempt = 1) {
+    const loadingEl = document.getElementById('loadingMatches');
+    const errorEl = document.getElementById('errorMessage');
+   
+    try {
+        loadingEl.style.display = 'block';
+        errorEl.style.display = 'none';
 
-    static async testConnection() {
-        try {
-            await this.request(API_CONFIG.endpoints.countries);
-            return true;
-        } catch (error) {
-            return false;
+        // Simula carregamento de APIs
+        await new Promise(resolve => setTimeout(resolve, 1000));
+       
+        state.matches = generateEnhancedMockMatches();
+        console.log(`✅ ${state.matches.length} partidas carregadas`);
+       
+        renderMatches();
+        loadingEl.style.display = 'none';
+        showSuccess('Partidas atualizadas com sucesso!');
+
+    } catch (error) {
+        console.error('❌ Erro:', error);
+        if (attempt < CONFIG.RETRY_ATTEMPTS) {
+            setTimeout(() => loadMatches(attempt + 1), 2000);
+        } else {
+            loadingEl.style.display = 'none';
+            showError('Erro ao carregar partidas. Usando dados de demonstração.');
+            state.matches = generateEnhancedMockMatches();
+            renderMatches();
         }
     }
 }
 
-// ===================================
-// UI Manager
-// ===================================
+function generateEnhancedMockMatches() {
+    const teams = [
+        { name: 'Manchester City', logo: '🔵', country: 'ENG' },
+        { name: 'Real Madrid', logo: '⚪', country: 'ESP' },
+        { name: 'Bayern München', logo: '🔴', country: 'GER' },
+        { name: 'PSG', logo: '💙', country: 'FRA' },
+        { name: 'Liverpool', logo: '🔴', country: 'ENG' },
+        { name: 'Barcelona', logo: '🔵', country: 'ESP' },
+        { name: 'Juventus', logo: '⚫', country: 'ITA' },
+        { name: 'Chelsea', logo: '🔵', country: 'ENG' },
+        { name: 'Atlético Madrid', logo: '🔴', country: 'ESP' },
+        { name: 'Inter Milan', logo: '🔵', country: 'ITA' },
+        { name: 'Borussia Dortmund', logo: '🟡', country: 'GER' },
+        { name: 'Arsenal', logo: '🔴', country: 'ENG' }
+    ];
 
-class UIManager {
-    static showLoading() {
-        const loadingElement = document.getElementById('loading-indicator');
-        if (loadingElement) {
-            loadingElement.setAttribute('aria-hidden', 'false');
-        }
-        AppState.isLoading = true;
-    }
+    const leagues = [
+        { name: 'Premier League', icon: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
+        { name: 'La Liga', icon: '🇪🇸' },
+        { name: 'Bundesliga', icon: '🇩🇪' },
+        { name: 'Serie A', icon: '🇮🇹' },
+        { name: 'Ligue 1', icon: '🇫🇷' },
+        { name: 'Champions League', icon: '⭐' }
+    ];
 
-    static hideLoading() {
-        const loadingElement = document.getElementById('loading-indicator');
-        if (loadingElement) {
-            loadingElement.setAttribute('aria-hidden', 'true');
-        }
-        AppState.isLoading = false;
-    }
+    const matches = [];
+    const now = new Date();
 
-    static showError(message = 'Erro desconhecido') {
-        const errorElement = document.getElementById('error-message');
-        const errorText = document.getElementById('error-text');
-        
-        if (errorElement && errorText) {
-            errorText.textContent = message;
-            errorElement.setAttribute('aria-hidden', 'false');
-        }
-        this.hideLoading();
-    }
-
-    static hideError() {
-        const errorElement = document.getElementById('error-message');
-        if (errorElement) {
-            errorElement.setAttribute('aria-hidden', 'true');
-        }
-    }
-
-    static updateAPIStatus() {
-        const statusText = document.getElementById('status-text');
-        const connectionStatus = document.getElementById('api-connection-status');
-        const lastUpdate = document.getElementById('last-update');
-
-        if (statusText) {
-            statusText.textContent = AppState.apiConnected ? 'API Conectada' : 'API Desconectada';
+    for (let i = 0; i < 15; i++) {
+        const homeTeam = teams[Math.floor(Math.random() * teams.length)];
+        let awayTeam = teams[Math.floor(Math.random() * teams.length)];
+       
+        while (awayTeam.name === homeTeam.name) {
+            awayTeam = teams[Math.floor(Math.random() * teams.length)];
         }
 
-        if (connectionStatus) {
-            const statusDot = connectionStatus.querySelector('.status-dot');
-            if (statusDot) {
-                statusDot.style.background = AppState.apiConnected ? 'var(--success-color)' : 'var(--error-color)';
+        const league = leagues[Math.floor(Math.random() * leagues.length)];
+        const isLive = Math.random() > 0.6;
+        const matchTime = new Date(now.getTime() + (Math.random() * 7200000));
+
+        const homeOdd = (1.3 + Math.random() * 3).toFixed(2);
+        const drawOdd = (2.5 + Math.random() * 2).toFixed(2);
+        const awayOdd = (1.3 + Math.random() * 3).toFixed(2);
+
+        matches.push({
+            id: `match_${i + 1}`,
+            homeTeam: homeTeam.name,
+            homeLogo: homeTeam.logo,
+            awayTeam: awayTeam.name,
+            awayLogo: awayTeam.logo,
+            league: league.name,
+            leagueIcon: league.icon,
+            time: matchTime.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+            isLive: isLive,
+            odds: { home: homeOdd, draw: drawOdd, away: awayOdd },
+            sport: 'football',
+            status: isLive ? 'live' : 'scheduled',
+            stats: {
+                homeForm: Math.floor(Math.random() * 100),
+                awayForm: Math.floor(Math.random() * 100),
+                h2h: `${Math.floor(Math.random() * 5)}-${Math.floor(Math.random() * 5)}`
             }
-            connectionStatus.innerHTML = `
-                <span class="status-dot" style="background: ${AppState.apiConnected ? 'var(--success-color)' : 'var(--error-color)'}"></span>
-                ${AppState.apiConnected ? 'Conectado' : 'Desconectado'}
-            `;
-        }
-
-        if (lastUpdate && AppState.lastUpdate) {
-            lastUpdate.textContent = Utils.formatDate(AppState.lastUpdate);
-        }
+        });
     }
 
-    static updateStats() {
-        const totalCountries = document.getElementById('total-countries');
-        const visibleCountries = document.getElementById('visible-countries');
-        const activeLeagues = document.getElementById('active-leagues');
+    return matches;
+}
 
-        if (totalCountries) totalCountries.textContent = AppState.countries.length;
-        if (visibleCountries) visibleCountries.textContent = AppState.filteredCountries.length;
-        if (activeLeagues) activeLeagues.textContent = '...'; // Placeholder
+// ===== RENDERIZAÇÃO =====
+function renderMatches() {
+    const matchesGrid = document.getElementById('matchesGrid');
+    const filters = state.filters;
+   
+    let filteredMatches = state.matches.filter(match => {
+        if (filters.sport !== 'all' && match.sport !== filters.sport) return false;
+        if (filters.status !== 'all' && match.status !== filters.status) return false;
+        if (filters.odd !== 'all') {
+            const maxOdd = Math.max(match.odds.home, match.odds.draw, match.odds.away);
+            if (filters.odd === 'low' && maxOdd > 2) return false;
+            if (filters.odd === 'medium' && (maxOdd <= 2 || maxOdd > 4)) return false;
+            if (filters.odd === 'high' && maxOdd <= 4) return false;
+        }
+        if (filters.search) {
+            const searchLower = filters.search.toLowerCase();
+            return match.homeTeam.toLowerCase().includes(searchLower) ||
+                   match.awayTeam.toLowerCase().includes(searchLower);
+        }
+        return true;
+    });
+
+    if (filteredMatches.length === 0) {
+        matchesGrid.innerHTML = `
+            <div class="empty-state" style="grid-column: 1/-1;">
+                <div class="empty-icon">🔍</div>
+                <p>Nenhuma partida encontrada  
+Tente ajustar os filtros</p>
+            </div>
+        `;
+        return;
     }
 
-    static createCountryCard(country) {
-        const isFavorite = AppState.favorites.has(country.id);
-        const flag = Utils.getCountryFlag(country.code);
-        const region = Utils.getRegionByCountry(country.name);
+    matchesGrid.innerHTML = filteredMatches.map(match => `
+        <article class="match-card" data-match-id="${match.id}" role="listitem">
+            <div class="match-header">
+                <span class="league-badge">
+                    ${match.leagueIcon} ${match.league}
+                </span>
+                ${match.isLive ?
+                    '<span class="live-indicator"><span class="live-dot"></span> AO VIVO</span>' :
+                    `<span class="match-time">⏰ ${match.time}</span>`
+                }
+            </div>
+           
+            <div class="teams-container">
+                <div class="team">
+                    <div class="team-logo">${match.homeLogo}</div>
+                    <span class="team-name">${match.homeTeam}</span>
+                </div>
+                <div class="vs">VS</div>
+                <div class="team">
+                    <div class="team-logo">${match.awayLogo}</div>
+                    <span class="team-name">${match.awayTeam}</span>
+                </div>
+            </div>
+
+            <div class="match-stats">
+                <div class="stat-mini">
+                    <div class="stat-mini-value">${match.stats.homeForm}%</div>
+                    <div class="stat-mini-label">Forma Casa</div>
+                </div>
+                <div class="stat-mini">
+                    <div class="stat-mini-value">${match.stats.h2h}</div>
+                    <div class="stat-mini-label">H2H</div>
+                </div>
+                <div class="stat-mini">
+                    <div class="stat-mini-value">${match.stats.awayForm}%</div>
+                    <div class="stat-mini-label">Forma Fora</div>
+                </div>
+            </div>
+
+            <div class="odds-container">
+                <button class="odd-button" data-type="home" data-odd="${match.odds.home}">
+                    <span class="odd-type">Casa</span>
+                    <span class="odd-value">${match.odds.home}</span>
+                </button>
+                <button class="odd-button" data-type="draw" data-odd="${match.odds.draw}">
+                    <span class="odd-type">Empate</span>
+                    <span class="odd-value">${match.odds.draw}</span>
+                </button>
+                <button class="odd-button" data-type="away" data-odd="${match.odds.away}">
+                    <span class="odd-type">Fora</span>
+                    <span class="odd-value">${match.odds.away}</span>
+                </button>
+            </div>
+        </article>
+    `).join('');
+
+    document.querySelectorAll('.odd-button').forEach(button => {
+        button.addEventListener('click', handleOddClick);
+    });
+}
+
+// ===== MANIPULAÇÃO DE APOSTAS =====
+function handleOddClick(event) {
+    const button = event.currentTarget;
+    const matchCard = button.closest('.match-card');
+    const matchId = matchCard.dataset.matchId;
+    const match = state.matches.find(m => m.id === matchId);
+
+    if (!match) return;
+
+    const betType = button.dataset.type;
+    const odd = parseFloat(button.dataset.odd);
+
+    document.querySelectorAll('.odd-button.selected').forEach(btn => {
+        btn.classList.remove('selected');
+    });
+
+    button.classList.add('selected');
+
+    state.currentBet = {
+        matchId,
+        match: `${match.homeTeam} vs ${match.awayTeam}`,
+        type: betType,
+        odd,
+        league: match.league
+    };
+
+    showBettingPanel();
+    updateBettingPanel();
+}
+
+function showBettingPanel() {
+    const panel = document.getElementById('bettingPanel');
+    panel.style.display = 'block';
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function updateBettingPanel() {
+    if (!state.currentBet) return;
+
+    const betTypeLabels = {
+        home: '🏠 Vitória Casa',
+        draw: '🤝 Empate',
+        away: '✈️ Vitória Fora'
+    };
+
+    document.getElementById('betMatch').textContent = state.currentBet.match;
+    document.getElementById('betType').textContent = betTypeLabels[state.currentBet.type];
+    document.getElementById('betOdd').textContent = state.currentBet.odd.toFixed(2);
+    document.getElementById('betLeague').textContent = state.currentBet.league;
+
+    calculatePotentialWin();
+}
+
+function calculatePotentialWin() {
+    const betAmount = parseFloat(document.getElementById('betAmount').value) || 0;
+    const odd = state.currentBet?.odd || 0;
+    const potentialWin = betAmount * odd;
+
+    document.getElementById('potentialWin').textContent = formatCurrency(potentialWin);
+
+    const placeBetButton = document.getElementById('placeBetButton');
+    placeBetButton.disabled = betAmount < CONFIG.MIN_BET || betAmount > state.balance;
+}
+
+function placeBet() {
+    const betAmount = parseFloat(document.getElementById('betAmount').value);
+
+    if (!state.currentBet) {
+        showError('Selecione uma aposta primeiro');
+        return;
+    }
+
+    if (betAmount < CONFIG.MIN_BET) {
+        showError(`Valor mínimo: ${formatCurrency(CONFIG.MIN_BET)}`);
+        return;
+    }
+
+    if (betAmount > state.balance) {
+        showError('Saldo insuficiente!');
+        return;
+    }
+
+    state.balance -= betAmount;
+   
+    const bet = {
+        id: `bet_${Date.now()}`,
+        ...state.currentBet,
+        amount: betAmount,
+        potentialWin: betAmount * state.currentBet.odd,
+        timestamp: new Date().toLocaleString('pt-BR'),
+        status: 'pending'
+    };
+
+    state.bettingHistory.unshift(bet);
+    state.stats.totalBets++;
+
+    // Simula resultado (60% chance de ganhar)
+    setTimeout(() => {
+        const won = Math.random() > 0.4;
+        const betToUpdate = state.bettingHistory.find(b => b.id === bet.id);
+        if (!betToUpdate) return;
+
+        betToUpdate.status = won ? 'won' : 'lost';
+       
+        if (won) {
+            state.balance += betToUpdate.potentialWin;
+            state.stats.wonBets++;
+            state.stats.totalProfit += (betToUpdate.potentialWin - betToUpdate.amount);
+            showModal('🎉', 'Você Ganhou!', `Parabéns! Você ganhou ${formatCurrency(betToUpdate.potentialWin)}!`);
+        } else {
+            state.stats.totalProfit -= betToUpdate.amount;
+            showModal('😔', 'Que pena!', `Não foi dessa vez. Continue tentando!`);
+        }
+
+        saveToStorage();
+        updateUI();
+        renderHistory();
+    }, 8000);
+
+    saveToStorage();
+    updateUI();
+    renderHistory();
+    clearBet();
+
+    showModal('✅', 'Aposta Confirmada!', `Sua aposta de ${formatCurrency(betAmount)} foi registrada!`);
+}
+
+function clearBet() {
+    state.currentBet = null;
+    document.getElementById('betAmount').value = '';
+    document.getElementById('bettingPanel').style.display = 'none';
+    document.querySelectorAll('.odd-button.selected').forEach(btn => {
+        btn.classList.remove('selected');
+    });
+    calculatePotentialWin();
+}
+
+// ===== HISTÓRICO =====
+function renderHistory() {
+    const historyGrid = document.getElementById('historyGrid');
+    const filter = state.historyFilter;
+
+    let filteredHistory = state.bettingHistory;
+    if (filter !== 'all') {
+        filteredHistory = state.bettingHistory.filter(bet => bet.status === filter);
+    }
+
+    if (filteredHistory.length === 0) {
+        const filterText = {
+            all: '',
+            pending: 'pendente',
+            won: 'ganha',
+            lost: 'perdida'
+        }[filter];
+        historyGrid.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">📋</div>
+                <p>Nenhuma aposta ${filterText} encontrada</p>
+            </div>
+        `;
+        return;
+    }
+
+    const statusLabels = {
+        pending: { text: '⏳ Pendente', class: 'result-pending' },
+        won: { text: '✅ Ganhou', class: 'result-win' },
+        lost: { text: '❌ Perdeu', class: 'result-loss' }
+    };
+
+    historyGrid.innerHTML = filteredHistory.map(bet => {
+        const status = statusLabels[bet.status];
+        const resultAmount = bet.status === 'won' ? bet.potentialWin : bet.amount;
+        const resultSign = bet.status === 'won' ? '+' : '-';
+        const resultColor = bet.status === 'won' ? 'var(--success)' : bet.status === 'lost' ? 'var(--error)' : 'var(--warning)';
 
         return `
-            <div class="game-card country-card" data-country-id="${country.id}" data-region="${region}" role="listitem">
-                <div class="country-header">
-                    <div class="country-flag">${flag}</div>
-                    <div class="country-info">
-                        <h3 class="country-name">${country.name}</h3>
-                        <span class="country-code">${country.code || 'N/A'}</span>
+            <div class="history-item">
+                <div class="history-details">
+                    <div class="history-match">⚽ ${bet.match}</div>
+                    <div class="history-info">
+                        🏆 ${bet.league} • 🕐 ${bet.timestamp}
                     </div>
-                    <button class="btn-favorite ${isFavorite ? 'active' : ''}" 
-                            data-country-id="${country.id}" 
-                            type="button" 
-                            aria-label="${isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}">
-                        <i class="fas fa-star" aria-hidden="true"></i>
-                    </button>
-                </div>
-                <div class="country-stats">
-                    <div class="stat-item">
-                        <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
-                        <span class="region-name">${region.charAt(0).toUpperCase() + region.slice(1)}</span>
-                    </div>
-                    <div class="stat-item">
-                        <i class="fas fa-trophy" aria-hidden="true"></i>
-                        <span class="leagues-count">Carregando...</span>
+                    <div class="history-info">
+                        💰 Aposta: ${formatCurrency(bet.amount)} • 📊 Odd: ${bet.odd.toFixed(2)}
                     </div>
                 </div>
-                <div class="country-actions">
-                    <button class="btn btn-primary btn-view-country" 
-                            data-country-id="${country.id}"
-                            data-country-name="${country.name}"
-                            data-country-code="${country.code}"
-                            type="button">
-                        <i class="fas fa-eye" aria-hidden="true"></i>
-                        Ver Detalhes
-                    </button>
-                    <button class="btn btn-secondary btn-view-leagues" 
-                            data-country-code="${country.code}"
-                            data-country-name="${country.name}"
-                            type="button">
-                        <i class="fas fa-list" aria-hidden="true"></i>
-                        Ligas
-                    </button>
+                <div class="history-result">
+                    <span class="result-badge ${status.class}">${status.text}</span>
+                    <span style="font-weight: 600; font-size: 1.2rem; color: ${resultColor};">
+                        ${bet.status === 'pending' ? formatCurrency(bet.potentialWin) : `${resultSign}${formatCurrency(resultAmount)}`}
+                    </span>
                 </div>
             </div>
         `;
-    }
+    }).join('');
+}
 
-    static renderCountries(countries = AppState.filteredCountries) {
-        const container = document.getElementById('countries-container');
-        const noResults = document.getElementById('no-results');
-        
-        if (!container) return;
+// ===== ATUALIZAÇÃO DE UI =====
+function updateUI() {
+    document.getElementById('userBalance').textContent = formatCurrency(state.balance);
+    document.getElementById('totalBets').textContent = state.stats.totalBets;
+    document.getElementById('wonBets').textContent = state.stats.wonBets;
+   
+    const winRate = state.stats.totalBets > 0
+        ? ((state.stats.wonBets / state.stats.totalBets) * 100).toFixed(1)
+        : 0;
+    document.getElementById('winRate').textContent = `${winRate}%`;
+   
+    const profitEl = document.getElementById('totalProfit');
+    profitEl.textContent = formatCurrency(state.stats.totalProfit);
+    profitEl.style.color = state.stats.totalProfit >= 0 ? 'var(--success)' : 'var(--error)';
+}
 
-        if (countries.length === 0) {
-            container.innerHTML = '';
-            if (noResults) noResults.setAttribute('aria-hidden', 'false');
-            return;
+// ===== EVENT LISTENERS =====
+function setupEventListeners() {
+    document.querySelectorAll('.sport-tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            document.querySelector('.sport-tab.active').classList.remove('active');
+            e.currentTarget.classList.add('active');
+            state.filters.sport = e.currentTarget.dataset.sport;
+            renderMatches();
+        });
+    });
+
+    document.getElementById('leagueFilter').addEventListener('change', (e) => {
+        state.filters.league = e.target.value;
+        renderMatches();
+    });
+
+    document.getElementById('statusFilter').addEventListener('change', (e) => {
+        state.filters.status = e.target.value;
+        renderMatches();
+    });
+
+    document.getElementById('oddFilter').addEventListener('change', (e) => {
+        state.filters.odd = e.target.value;
+        renderMatches();
+    });
+
+    document.getElementById('searchInput').addEventListener('input', debounce((e) => {
+        state.filters.search = e.target.value;
+        renderMatches();
+    }, 300));
+
+    document.getElementById('clearFilters').addEventListener('click', () => {
+        state.filters = { sport: 'all', league: 'all', status: 'all', odd: 'all', search: '' };
+        document.getElementById('leagueFilter').value = 'all';
+        document.getElementById('statusFilter').value = 'all';
+        document.getElementById('oddFilter').value = 'all';
+        document.getElementById('searchInput').value = '';
+        document.querySelector('.sport-tab.active').classList.remove('active');
+        document.querySelector('.sport-tab[data-sport="all"]').classList.add('active');
+        renderMatches();
+        showSuccess('Filtros limpos!');
+    });
+
+    document.querySelectorAll('.quick-amount').forEach(button => {
+        button.addEventListener('click', (e) => {
+            document.getElementById('betAmount').value = e.currentTarget.dataset.amount;
+            calculatePotentialWin();
+        });
+    });
+
+    document.getElementById('betAmount').addEventListener('input', calculatePotentialWin);
+    document.getElementById('clearBet').addEventListener('click', clearBet);
+    document.getElementById('placeBetButton').addEventListener('click', placeBet);
+    document.getElementById('modalButton').addEventListener('click', closeModal);
+    document.getElementById('refreshBtn').addEventListener('click', () => loadMatches());
+    document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
+    document.querySelectorAll('.history-tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            document.querySelector('.history-tab.active').classList.remove('active');
+            e.currentTarget.classList.add('active');
+            state.historyFilter = e.currentTarget.dataset.filter;
+            renderHistory();
+        });
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && document.getElementById('confirmModal').classList.contains('active')) {
+            closeModal();
         }
+    });
 
-        if (noResults) noResults.setAttribute('aria-hidden', 'true');
-        
-        container.innerHTML = countries.map(country => this.createCountryCard(country)).join('');
-        this.updateStats();
+    console.log('✅ Event listeners configurados');
+}
+
+// ===== AUTO REFRESH =====
+function startAutoRefresh() {
+    if (state.autoRefreshInterval) {
+        clearInterval(state.autoRefreshInterval);
+    }
+    state.autoRefreshInterval = setInterval(() => {
+        console.log('🔄 Auto-refresh das partidas...');
+        loadMatches();
+    }, CONFIG.AUTO_REFRESH);
+}
+
+// ===== THEME TOGGLE =====
+function toggleTheme() {
+    const root = document.documentElement;
+    const themeBtn = document.getElementById('themeToggle');
+   
+    if (state.theme === 'dark') {
+        root.style.setProperty('--bg-dark', '#f5f5f5');
+        root.style.setProperty('--bg-card', '#ffffff');
+        root.style.setProperty('--bg-hover', '#e0e0e0');
+        root.style.setProperty('--text-primary', '#000000');
+        root.style.setProperty('--text-secondary', '#666666');
+        root.style.setProperty('--border', '#dddddd');
+        themeBtn.textContent = '☀️';
+        state.theme = 'light';
+        showSuccess('Tema claro ativado!');
+    } else {
+        root.style.setProperty('--bg-dark', '#0a0e17');
+        root.style.setProperty('--bg-card', '#151923');
+        root.style.setProperty('--bg-hover', '#1e242e');
+        root.style.setProperty('--text-primary', '#ffffff');
+        root.style.setProperty('--text-secondary', '#a0a5b8');
+        root.style.setProperty('--border', '#2a3040');
+        themeBtn.textContent = '🌙';
+        state.theme = 'dark';
+        showSuccess('Tema escuro ativado!');
     }
 }
 
-// ===================================
-// Country Manager
-// ===================================
-
-class CountryManager {
-    static async loadCountries() {
-        try {
-            UIManager.showLoading();
-            UIManager.hideError();
-
-            const countries = await APIManager.getCountries();
-            
-            if (!countries || !Array.isArray(countries)) {
-                throw new Error('Dados inválidos recebidos da API');
-            }
-
-            AppState.countries = countries.map(country => ({
-                id: country.id || Math.random().toString(36),
-                name: country.name || 'Nome não disponível',
-                code: country.code || null,
-                flag: country.flag || null
-            }));
-
-            AppState.filteredCountries = [...AppState.countries];
-            
-            UIManager.renderCountries();
-            UIManager.updateAPIStatus();
-            UIManager.hideLoading();
-            
-            Utils.showToast(`${AppState.countries.length} países carregados com sucesso!`, 'success');
-            
-        } catch (error) {
-            console.error('Erro ao carregar países:', error);
-            UIManager.showError('Não foi possível carregar os países. Verifique sua chave da API.');
-            Utils.showToast('Erro ao conectar com a API de basquete', 'error');
-        }
-    }
-
-    static filterCountries() {
-        const searchTerm = document.getElementById('search-input')?.value.toLowerCase() || '';
-        const selectedRegion = document.getElementById('region-filter')?.value || 'all';
-
-        let filtered = AppState.countries;
-
-        // Filtrar por região
-        if (selectedRegion !== 'all') {
-            filtered = filtered.filter(country => {
-                const region = Utils.getRegionByCountry(country.name);
-                return region === selectedRegion;
-            });
-        }
-
-        // Filtrar por busca
-        if (searchTerm) {
-            filtered = filtered.filter(country => 
-                country.name.toLowerCase().includes(searchTerm) ||
-                (country.code && country.code.toLowerCase().includes(searchTerm))
-            );
-        }
-
-        AppState.filteredCountries = filtered;
-        UIManager.renderCountries();
-
-        if (filtered.length === 0 && (searchTerm || selectedRegion !== 'all')) {
-            Utils.showToast('Nenhum país encontrado com os filtros aplicados', 'info');
-        }
-    }
-
-    static toggleFavorite(countryId) {
-        if (AppState.favorites.has(countryId)) {
-            AppState.favorites.delete(countryId);
-            Utils.showToast('País removido dos favoritos', 'info');
-        } else {
-            AppState.favorites.add(countryId);
-            Utils.showToast('País adicionado aos favoritos', 'success');
-        }
-
-        // Salvar no localStorage
-        localStorage.setItem('favoriteCountries', JSON.stringify([...AppState.favorites]));
-        
-        // Atualizar UI
-        UIManager.renderCountries();
-    }
-
-    static async showCountryModal(countryId, countryName, countryCode) {
-        const modal = document.getElementById('country-modal');
-        const modalTitle = document.getElementById('modal-title');
-        const modalBody = document.getElementById('modal-body');
-
-        if (!modal || !modalTitle || !modalBody) return;
-
-        modalTitle.textContent = `${countryName} (${countryCode || 'N/A'})`;
-        modalBody.innerHTML = '<div class="loading-modal"><div class="spinner"></div><p>Carregando informações...</p></div>';
-        
-        modal.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
-
-        try {
-            // Tentar carregar ligas do país
-            const leagues = await APIManager.getLeagues(countryCode);
-            
-            modalBody.innerHTML = `
-                <div class="country-details">
-                    <div class="country-info-detailed">
-                        <div class="info-item">
-                            <strong>Nome:</strong> ${countryName}
-                        </div>
-                        <div class="info-item">
-                            <strong>Código:</strong> ${countryCode || 'N/A'}
-                        </div>
-                        <div class="info-item">
-                            <strong>Região:</strong> ${Utils.getRegionByCountry(countryName).charAt(0).toUpperCase() + Utils.getRegionByCountry(countryName).slice(1)}
-                        </div>
-                        <div class="info-item">
-                            <strong>Favorito:</strong> ${AppState.favorites.has(countryId) ? 'Sim' : 'Não'}
-                        </div>
-                    </div>
-                    
-                    <div class="leagues-section">
-                        <h4>Ligas de Basquete</h4>
-                        ${leagues && leagues.length > 0 ? `
-                            <div class="leagues-list">
-                                ${leagues.slice(0, 10).map(league => `
-                                    <div class="league-item">
-                                        <div class="league-info">
-                                            <strong>${league.name}</strong>
-                                            ${league.season ? `<span class="league-season">Temporada: ${league.season}</span>` : ''}
-                                        </div>
-                                        ${league.logo ? `<img src="${league.logo}" alt="${league.name}" class="league-logo">` : ''}
-                                    </div>
-                                `).join('')}
-                                ${leagues.length > 10 ? `<p class="more-leagues">E mais ${leagues.length - 10} ligas...</p>` : ''}
-                            </div>
-                        ` : '<p class="no-leagues">Nenhuma liga encontrada para este país.</p>'}
-                    </div>
-                </div>
-            `;
-        } catch (error) {
-            modalBody.innerHTML = `
-                <div class="country-details">
-                    <div class="country-info-detailed">
-                        <div class="info-item">
-                            <strong>Nome:</strong> ${countryName}
-                        </div>
-                        <div class="info-item">
-                            <strong>Código:</strong> ${countryCode || 'N/A'}
-                        </div>
-                        <div class="info-item">
-                            <strong>Região:</strong> ${Utils.getRegionByCountry(countryName).charAt(0).toUpperCase() + Utils.getRegionByCountry(countryName).slice(1)}
-                        </div>
-                    </div>
-                    
-                    <div class="error-section">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <p>Não foi possível carregar as ligas deste país.</p>
-                    </div>
-                </div>
-            `;
-        }
-    }
-
-    static closeModal() {
-        const modal = document.getElementById('country-modal');
-        if (modal) {
-            modal.setAttribute('aria-hidden', 'true');
-            document.body.style.overflow = '';
-        }
-    }
+// ===== MODAL =====
+function showModal(icon, title, message) {
+    const modal = document.getElementById('confirmModal');
+    document.getElementById('modalIcon').textContent = icon;
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalMessage').textContent = message;
+    modal.classList.add('active');
+    document.getElementById('modalButton').focus();
 }
 
-// ===================================
-// Event Handlers
-// ===================================
+function closeModal() {
+    document.getElementById('confirmModal').classList.remove('active');
+}
 
-class EventHandlers {
-    static init() {
-        // Botão de carregar países
-        const loadCountriesBtn = document.getElementById('load-countries-btn');
-        if (loadCountriesBtn) {
-            loadCountriesBtn.addEventListener('click', () => {
-                CountryManager.loadCountries();
-            });
-        }
+// ===== MENSAGENS =====
+function showError(message) {
+    const errorEl = document.getElementById('errorMessage');
+    errorEl.textContent = '❌ ' + message;
+    errorEl.style.display = 'block';
+    setTimeout(() => {
+        errorEl.style.display = 'none';
+    }, 5000);
+}
 
-        // Botão de retry
-        const retryBtn = document.getElementById('retry-btn');
-        if (retryBtn) {
-            retryBtn.addEventListener('click', () => {
-                CountryManager.loadCountries();
-            });
-        }
+function showSuccess(message) {
+    const successEl = document.getElementById('successMessage');
+    successEl.textContent = '✅ ' + message;
+    successEl.style.display = 'block';
+    setTimeout(() => {
+        successEl.style.display = 'none';
+    }, 3000);
+}
 
-        // Filtros
-        const searchInput = document.getElementById('search-input');
-        if (searchInput) {
-            searchInput.addEventListener('input', Utils.debounce(() => {
-                CountryManager.filterCountries();
-            }, 300));
-        }
+// ===== UTILITÁRIOS =====
+function formatCurrency(value) {
+    return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+    }).format(value);
+}
 
-        const regionFilter = document.getElementById('region-filter');
-        if (regionFilter) {
-            regionFilter.addEventListener('change', () => {
-                CountryManager.filterCountries();
-            });
-        }
-
-        // Controles de visualização
-        const viewButtons = document.querySelectorAll('.btn-view');
-        viewButtons.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const view = e.target.closest('.btn-view').dataset.view;
-                this.changeView(view);
-            });
-        });
-
-        // Delegação de eventos para países
-        const countriesContainer = document.getElementById('countries-container');
-        if (countriesContainer) {
-            countriesContainer.addEventListener('click', (e) => {
-                const favoriteBtn = e.target.closest('.btn-favorite');
-                const viewBtn = e.target.closest('.btn-view-country');
-                const leaguesBtn = e.target.closest('.btn-view-leagues');
-
-                if (favoriteBtn) {
-                    const countryId = favoriteBtn.dataset.countryId;
-                    CountryManager.toggleFavorite(countryId);
-                } else if (viewBtn) {
-                    const countryId = viewBtn.dataset.countryId;
-                    const countryName = viewBtn.dataset.countryName;
-                    const countryCode = viewBtn.dataset.countryCode;
-                    CountryManager.showCountryModal(countryId, countryName, countryCode);
-                } else if (leaguesBtn) {
-                    const countryCode = leaguesBtn.dataset.countryCode;
-                    const countryName = leaguesBtn.dataset.countryName;
-                    Utils.showToast(`Carregando ligas de ${countryName}...`, 'info');
-                    // Aqui você pode implementar uma funcionalidade específica para ligas
-                }
-            });
-        }
-
-        // Modal
-        const modal = document.getElementById('country-modal');
-        if (modal) {
-            const closeBtn = modal.querySelector('.modal-close');
-            const backdrop = modal.querySelector('.modal-backdrop');
-            
-            if (closeBtn) closeBtn.addEventListener('click', CountryManager.closeModal);
-            if (backdrop) backdrop.addEventListener('click', CountryManager.closeModal);
-        }
-
-        // Tecla ESC para fechar modal
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                CountryManager.closeModal();
-            }
-        });
-
-        // Exportar dados
-        const exportBtn = document.getElementById('export-data');
-        if (exportBtn) {
-            exportBtn.addEventListener('click', this.exportData);
-        }
-
-        // Ver favoritos
-        const favoritesBtn = document.getElementById('view-favorites');
-        if (favoritesBtn) {
-            favoritesBtn.addEventListener('click', this.showFavorites);
-        }
-
-        // Refresh stats
-        const refreshStatsBtn = document.querySelector('.btn-refresh-stats');
-        if (refreshStatsBtn) {
-            refreshStatsBtn.addEventListener('click', () => {
-                UIManager.updateStats();
-                UIManager.updateAPIStatus();
-                Utils.showToast('Estatísticas atualizadas', 'success');
-            });
-        }
-    }
-
-    static changeView(view) {
-        AppState.currentView = view;
-        
-        // Atualizar botões ativos
-        document.querySelectorAll('.btn-view').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.view === view);
-        });
-
-        // Atualizar classe do container
-        const container = document.getElementById('countries-container');
-        if (container) {
-            container.className = view === 'list' ? 'countries-list' : 'games-grid';
-        }
-
-        Utils.showToast(`Visualização alterada para ${view === 'list' ? 'lista' : 'grade'}`, 'info');
-    }
-
-    static exportData() {
-        if (AppState.countries.length === 0) {
-            Utils.showToast('Nenhum dado para exportar', 'warning');
-            return;
-        }
-
-        const dataToExport = {
-            countries: AppState.countries,
-            favorites: [...AppState.favorites],
-            exportDate: new Date().toISOString(),
-            totalCountries: AppState.countries.length
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
         };
-
-        const blob = new Blob([JSON.stringify(dataToExport, null, 2)], {
-            type: 'application/json'
-        });
-
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `basquete-paises-${new Date().toISOString().split('T')[0]}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-
-        Utils.showToast('Dados exportados com sucesso!', 'success');
-    }
-
-    static showFavorites() {
-        if (AppState.favorites.size === 0) {
-            Utils.showToast('Nenhum país marcado como favorito', 'info');
-            return;
-        }
-
-        const favoriteCountries = AppState.countries.filter(country => 
-            AppState.favorites.has(country.id)
-        );
-
-        AppState.filteredCountries = favoriteCountries;
-        UIManager.renderCountries();
-
-        // Resetar filtros
-        const searchInput = document.getElementById('search-input');
-        const regionFilter = document.getElementById('region-filter');
-        
-        if (searchInput) searchInput.value = '';
-        if (regionFilter) regionFilter.value = 'all';
-
-        Utils.showToast(`Exibindo ${favoriteCountries.length} países favoritos`, 'success');
-    }
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
 }
 
-// ===================================
-// Mobile Menu Manager
-// ===================================
+function handleError(errorCode, message) {
+    console.error(`[${errorCode}] ${message}`);
+   
+    const errorMessages = {
+        [ERROR_CODES.API_TIMEOUT]: '⏱️ Tempo esgotado ao conectar com servidor',
+        [ERROR_CODES.API_UNAVAILABLE]: '🔌 Serviço temporariamente indisponível',
+        [ERROR_CODES.INVALID_DATA]: '⚠️ Dados inválidos recebidos',
+        [ERROR_CODES.INSUFFICIENT_BALANCE]: '💰 Saldo insuficiente para realizar aposta',
+        [ERROR_CODES.MATCH_STARTED]: '⚽ Esta partida já foi iniciada',
+        [ERROR_CODES.NETWORK_ERROR]: '📡 Erro de conexão com a internet'
+    };
 
-class MobileMenu {
-    static init() {
-        const toggle = document.querySelector('.mobile-menu-toggle');
-        const overlay = document.querySelector('.mobile-nav-overlay');
-        
-        if (!toggle || !overlay) return;
-
-        let isOpen = false;
-
-        const open = () => {
-            isOpen = true;
-            overlay.classList.add('active');
-            toggle.setAttribute('aria-expanded', 'true');
-            document.body.style.overflow = 'hidden';
-        };
-
-        const close = () => {
-            isOpen = false;
-            overlay.classList.remove('active');
-            toggle.setAttribute('aria-expanded', 'false');
-            document.body.style.overflow = '';
-        };
-
-        toggle.addEventListener('click', () => {
-            isOpen ? close() : open();
-        });
-
-        overlay.addEventListener('click', (e) => {
-            if (e.target === overlay) close();
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && isOpen) close();
-        });
-
-        // Fechar ao clicar em links
-        const mobileLinks = overlay.querySelectorAll('.mobile-nav-link, .mobile-btn');
-        mobileLinks.forEach(link => {
-            link.addEventListener('click', close);
-        });
-    }
+    showError(errorMessages[errorCode] || message);
 }
 
-// ===================================
-// Inicialização da Aplicação
-// ===================================
+// ===== LOG INICIAL =====
+console.log(`
 
-class App {
-    static async init() {
-        console.log('🏀 Inicializando BasqueteJG...');
+   🎰 BetPro - Sistema de Apostas v2.0      
 
-        // Verificar se a chave da API foi configurada
-        if (API_CONFIG.headers['X-RapidAPI-Key'] === 'SUA_CHAVE_RAPIDAPI_AQUI') {
-            Utils.showToast('⚠️ Configure sua chave da RapidAPI no código!', 'warning', 8000);
-            UIManager.showError('Chave da API não configurada. Edite o arquivo script.js e adicione sua chave da RapidAPI.');
-            return;
-        }
-
-        // Inicializar módulos
-        EventHandlers.init();
-        MobileMenu.init();
-        
-        // Testar conexão com API
-        Utils.showToast('Testando conexão com a API...', 'info');
-        
-        try {
-            const isConnected = await APIManager.testConnection();
-            if (isConnected) {
-                Utils.showToast('✅ API conectada com sucesso!', 'success');
-                UIManager.updateAPIStatus();
-            } else {
-                throw new Error('Falha na conexão');
-            }
-        } catch (error) {
-            Utils.showToast('❌ Erro ao conectar com a API', 'error');
-            UIManager.updateAPIStatus();
-            UIManager.showError('Erro de conexão com a API. Verifique sua chave e conexão com internet.');
-        }
-
-        // Configurar acessibilidade
-        this.setupAccessibility();
-        
-        console.log('✅ BasqueteJG inicializado!');
-    }
-
-    static setupAccessibility() {
-        // Navegação por teclado
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Tab') {
-                document.body.classList.add('keyboard-navigation');
-            }
-        });
-
-        document.addEventListener('mousedown', () => {
-            document.body.classList.remove('keyboard-navigation');
-        });
-
-        // Anúncios para leitores de tela
-        const announcer = document.createElement('div');
-        announcer.setAttribute('aria-live', 'polite');
-        announcer.setAttribute('aria-atomic', 'true');
-        announcer.className = 'visually-hidden';
-        announcer.id = 'announcer';
-        document.body.appendChild(announcer);
-    }
-}
-
-// ===================================
-// Inicialização quando DOM carregado
-// ===================================
-
-document.addEventListener('DOMContentLoaded', () => {
-    App.init();
-});
+ 📊 APIs Integradas: 0 (Simuladas)             
+ ⚡ Timeout: ${CONFIG.API_TIMEOUT}ms                        
+🔄 Retry: ${CONFIG.RETRY_ATTEMPTS}x                               
+ 💰 Aposta mínima: ${formatCurrency(CONFIG.MIN_BET)}                  
+ 🔄 Auto-refresh: ${CONFIG.AUTO_REFRESH/1000}s                     
+ ♿ Acessibilidade: WCAG 2.1 AA                
+ 📱 Responsivo: ✅                            
+ 🎨 Temas: Dark/Light                        
+        `);
