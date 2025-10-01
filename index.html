@@ -3,422 +3,1991 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A melhor plataforma de apostas em basquete online. Países e ligas de basquete com as melhores odds do mercado.">
-    <title>BasqueteJG | A melhor experiência em apostas de basquete</title>
+    <meta name="description" content="BetPro - Plataforma de apostas esportivas simuladas com estatísticas em tempo real">
+    <title>BetPro - Apostas Esportivas</title>
     
-    <!-- Preconnect para melhor performance -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
-          integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
-          crossorigin="anonymous" referrerpolicy="no-referrer">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    
-    <!-- CSS -->
-    <link rel="stylesheet" href="style.css">
+  <style>
+        /* ===== RESET E VARIÁVEIS ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00ff88;
+            --primary-dark: #00cc6a;
+            --secondary: #ffd600;
+            --accent: #ff3366;
+            --bg-dark: #0a0e17;
+            --bg-card: #151923;
+            --bg-hover: #1e242e;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a5b8;
+            --border: #2a3040;
+            --error: #ff5252;
+            --success: #00e676;
+            --warning: #ffab00;
+            --blue: #2196f3;
+            --purple: #9c27b0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e17 0%, #151923 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ===== ACESSIBILIDADE ===== */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        *:focus {
+            outline: 3px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: rgba(21, 25, 35, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 255, 136, 0.1);
+        }
+
+        .header-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--primary), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: transform 0.3s;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .balance-display {
+            background: linear-gradient(135deg, var(--bg-dark), var(--bg-card));
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            border: 2px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+            animation: pulseGlow 3s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(0, 255, 136, 0.5); }
+        }
+
+        .balance-amount {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .theme-toggle {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            color: var(--text-primary);
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--primary);
+            transform: rotate(180deg);
+        }
+
+        .refresh-btn {
+            background: var(--blue);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .refresh-btn:hover {
+            background: #1976d2;
+            transform: scale(1.05);
+        }
+
+        /* ===== CONTAINER PRINCIPAL ===== */
+        .container {
+            max-width: 1600px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* ===== STATS CARDS COM ANIMAÇÃO ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-hover));
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.2);
+        }
+
+        .stat-card:hover::before {
+            left: 100%;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--primary), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ===== FILTROS MELHORADOS ===== */
+        .filters {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .filters-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .filters-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .clear-filters {
+            background: transparent;
+            color: var(--error);
+            border: 2px solid var(--error);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .clear-filters:hover {
+            background: var(--error);
+            color: white;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        select, input {
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            border: 2px solid var(--border);
+            padding: 0.875rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        select:hover, input:hover {
+            border-color: var(--primary);
+        }
+
+        select:focus, input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+        }
+
+        /* ===== TABS DE ESPORTES ===== */
+        .sport-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+
+        .sport-tab {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            color: var(--text-primary);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sport-tab:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .sport-tab.active {
+            background: var(--primary);
+            color: var(--bg-dark);
+            border-color: var(--primary);
+        }
+
+        /* ===== GRID DE PARTIDAS MELHORADA ===== */
+        .matches-section {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+        }
+
+        .matches-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .match-card {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-hover));
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .match-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary);
+            transform: scaleY(0);
+            transition: transform 0.3s;
+        }
+
+        .match-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 40px rgba(0, 255, 136, 0.2);
+        }
+
+        .match-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .league-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 0.8rem;
+            background: var(--bg-dark);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: var(--error);
+            font-weight: bold;
+            font-size: 0.85rem;
+            padding: 0.4rem 0.8rem;
+            background: rgba(255, 82, 82, 0.1);
+            border-radius: 20px;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--error);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .match-time {
+            font-size: 0.85rem;
+            color: var(--warning);
+            font-weight: bold;
+            padding: 0.4rem 0.8rem;
+            background: rgba(255, 171, 0, 0.1);
+            border-radius: 20px;
+        }
+
+        .teams-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            gap: 1rem;
+        }
+
+        .team {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            flex: 1;
+        }
+
+        .team-logo {
+            width: 50px;
+            height: 50px;
+            background: var(--bg-dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            border: 2px solid var(--border);
+        }
+
+        .team-name {
+            font-weight: 600;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+
+        .vs {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            font-weight: bold;
+            background: var(--bg-dark);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--border);
+        }
+
+        .match-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: var(--bg-dark);
+            border-radius: 10px;
+        }
+
+        .stat-mini {
+            text-align: center;
+        }
+
+        .stat-mini-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .stat-mini-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .odds-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+        }
+
+        .odd-button {
+            background: var(--bg-dark);
+            border: 2px solid var(--border);
+            padding: 1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .odd-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(0, 255, 136, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .odd-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .odd-button:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .odd-button.selected {
+            background: var(--primary);
+            border-color: var(--primary-dark);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+        }
+
+        .odd-type {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            display: block;
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .odd-button:hover .odd-type,
+        .odd-button.selected .odd-type {
+            color: var(--bg-dark);
+        }
+
+        .odd-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--text-primary);
+            position: relative;
+            z-index: 1;
+        }
+
+        .odd-button:hover .odd-value,
+        .odd-button.selected .odd-value {
+            color: var(--bg-dark);
+        }
+
+        /* ===== PAINEL DE APOSTAS MELHORADO ===== */
+        .betting-panel {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-hover));
+            border: 2px solid var(--primary);
+            border-radius: 20px;
+            padding: 2rem;
+            position: sticky;
+            top: 120px;
+            box-shadow: 0 10px 40px rgba(0, 255, 136, 0.2);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .panel-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--primary), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .clear-bet {
+            background: transparent;
+            color: var(--error);
+            border: 2px solid var(--error);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .clear-bet:hover {
+            background: var(--error);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .bet-preview {
+            background: var(--bg-dark);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .bet-info {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .bet-info:last-child {
+            border-bottom: none;
+        }
+
+        .bet-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .bet-value {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .amount-section {
+            margin: 1.5rem 0;
+        }
+
+        .amount-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .amount-input {
+            width: 100%;
+            padding: 1.25rem;
+            font-size: 1.5rem;
+            text-align: center;
+            font-weight: bold;
+            background: var(--bg-dark);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            color: var(--primary);
+            transition: all 0.3s;
+        }
+
+        .amount-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 255, 136, 0.1);
+        }
+
+        .quick-amounts {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .quick-amount {
+            background: var(--bg-dark);
+            border: 2px solid var(--border);
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .quick-amount:hover {
+            border-color: var(--primary);
+            background: rgba(0, 255, 136, 0.1);
+            transform: scale(1.05);
+        }
+
+        .potential-win {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(33, 150, 243, 0.1));
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            text-align: center;
+            border: 2px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .potential-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .potential-amount {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--primary), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: scaleIn 0.3s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .place-bet-button {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--blue));
+            color: var(--bg-dark);
+            border: none;
+            padding: 1.5rem;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+        }
+
+        .place-bet-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 255, 136, 0.4);
+        }
+
+        .place-bet-button:active {
+            transform: translateY(-1px);
+        }
+
+        .place-bet-button:disabled {
+            background: var(--border);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            color: var(--text-secondary);
+        }
+
+        /* ===== HISTÓRICO MELHORADO ===== */
+        .history-section {
+            margin-top: 3rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .history-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .history-tab {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            color: var(--text-primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .history-tab:hover {
+            border-color: var(--primary);
+        }
+
+        .history-tab.active {
+            background: var(--primary);
+            color: var(--bg-dark);
+            border-color: var(--primary);
+        }
+
+        .history-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .history-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1.5rem;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .history-item:hover {
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .history-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .history-match {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .history-info {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .history-result {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.5rem;
+        }
+
+        .result-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .result-win {
+            background: var(--success);
+            color: white;
+        }
+
+        .result-loss {
+            background: var(--error);
+            color: white;
+        }
+
+        .result-pending {
+            background: var(--warning);
+            color: var(--bg-dark);
+        }
+
+        /* ===== LOADING ===== */
+        .loading {
+            text-align: center;
+            padding: 4rem;
+        }
+
+        .spinner {
+            border: 4px solid var(--border);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ===== MODAL ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-hover));
+            border: 2px solid var(--primary);
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            animation: slideUp 0.5s ease-out;
+            box-shadow: 0 20px 60px rgba(0, 255, 136, 0.3);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            animation: bounceIn 0.6s;
+        }
+
+        @keyframes bounceIn {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .modal-message {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .modal-button {
+            background: linear-gradient(135deg, var(--primary), var(--blue));
+            color: var(--bg-dark);
+            border: none;
+            padding: 1rem 3rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        .modal-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.4);
+        }
+
+        /* ===== MESSAGES ===== */
+        .message {
+            padding: 1.25rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+            text-align: center;
+            font-weight: 600;
+            animation: slideDown 0.5s;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .error-message {
+            background: rgba(255, 82, 82, 0.2);
+            border: 2px solid var(--error);
+            color: var(--error);
+        }
+
+        .success-message {
+            background: rgba(0, 230, 118, 0.2);
+            border: 2px solid var(--success);
+            color: var(--success);
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* ===== RESPONSIVIDADE ===== */
+        @media (max-width: 1200px) {
+            .matches-section {
+                grid-template-columns: 1fr;
+            }
+
+            .betting-panel {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+            }
+
+            .matches-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-amounts {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .history-item {
+                grid-template-columns: 1fr;
+            }
+
+            .sport-tabs {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Skip to main content for accessibility -->
-    <a href="#main-content" class="skip-link" aria-label="Pular para o conteúdo principal">Pular para o conteúdo</a>
-
     <!-- Header -->
-    <header class="main-header" role="banner">
-        <div class="header-container container">
-            <!-- Logo -->
-            <div class="logo-section">
-                <a href="#" class="logo-link" aria-label="BasqueteJG - Página inicial">
-                    <i class="fas fa-basketball-ball" aria-hidden="true"></i>
-                    <h1 class="logo">BasqueteJG</h1>
-                </a>
-            </div>
-
-            <!-- Mobile menu toggle -->
-            <button class="mobile-menu-toggle" aria-label="Abrir menu de navegação" aria-expanded="false">
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-            </button>
-
-            <!-- Navigation -->
-            <nav class="main-nav" role="navigation" aria-label="Navegação principal">
-                <ul class="nav-list">
-                    <li><a href="#" class="nav-link active" aria-current="page">
-                        <i class="fas fa-globe-americas" aria-hidden="true"></i>
-                        <span>Países</span>
-                    </a></li>
-                    <li><a href="#" class="nav-link">
-                        <i class="fas fa-trophy" aria-hidden="true"></i>
-                        <span>Ligas</span>
-                    </a></li>
-                    <li><a href="#" class="nav-link">
-                        <i class="fas fa-chart-bar" aria-hidden="true"></i>
-                        <span>Estatísticas</span>
-                    </a></li>
-                    <li><a href="#" class="nav-link">
-                        <i class="fas fa-user-circle" aria-hidden="true"></i>
-                        <span>Minha Conta</span>
-                    </a></li>
-                    <li><a href="#" class="nav-link">
-                        <i class="fas fa-question-circle" aria-hidden="true"></i>
-                        <span>Ajuda</span>
-                    </a></li>
-                </ul>
-            </nav>
-
-            <!-- Authentication buttons -->
-            <div class="auth-buttons">
-                <button class="btn btn-login" type="button">
-                    <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
-                    <span>Entrar</span>
+    <header class="header" role="banner">
+        <div class="header-content">
+            <a href="#" class="logo" aria-label="BetPro - Página Inicial">
+                🎰 BetPro
+            </a>
+            <div class="header-actions">
+                <button class="refresh-btn" id="refreshBtn" aria-label="Atualizar partidas">
+                    🔄 Atualizar
                 </button>
-                <button class="btn btn-signup" type="button">
-                    <i class="fas fa-user-plus" aria-hidden="true"></i>
-                    <span>Registrar</span>
+                <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema">
+                    🌙
                 </button>
-            </div>
-        </div>
-
-        <!-- Mobile Navigation Overlay -->
-        <div class="mobile-nav-overlay">
-            <nav class="mobile-nav" role="navigation" aria-label="Menu de navegação móvel">
-                <ul class="mobile-nav-list">
-                    <li><a href="#" class="mobile-nav-link">
-                        <i class="fas fa-globe-americas" aria-hidden="true"></i>
-                        Países
-                    </a></li>
-                    <li><a href="#" class="mobile-nav-link">
-                        <i class="fas fa-trophy" aria-hidden="true"></i>
-                        Ligas
-                    </a></li>
-                    <li><a href="#" class="mobile-nav-link">
-                        <i class="fas fa-chart-bar" aria-hidden="true"></i>
-                        Estatísticas
-                    </a></li>
-                    <li><a href="#" class="mobile-nav-link">
-                        <i class="fas fa-user-circle" aria-hidden="true"></i>
-                        Minha Conta
-                    </a></li>
-                    <li><a href="#" class="mobile-nav-link">
-                        <i class="fas fa-question-circle" aria-hidden="true"></i>
-                        Ajuda
-                    </a></li>
-                </ul>
-                <div class="mobile-auth-buttons">
-                    <button class="btn btn-login mobile-btn">Entrar</button>
-                    <button class="btn btn-signup mobile-btn">Registrar</button>
+                <div class="balance-display" role="status" aria-live="polite">
+                    <span class="sr-only">Saldo disponível:</span>
+                    💰 <span class="balance-amount" id="userBalance">R$ 1.000,00</span>
                 </div>
-            </nav>
+            </div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main id="main-content" class="main-content" role="main">
-        <div class="container">
-            <!-- Hero Section -->
-            <section class="hero-section" aria-labelledby="hero-title">
-                <div class="hero-content">
-                    <div class="hero-text">
-                        <h2 id="hero-title" class="hero-title">
-                            <i class="fas fa-basketball-ball" aria-hidden="true"></i>
-                            Basquete Mundial
-                        </h2>
-                        <p class="hero-description">
-                            Explore países e ligas de basquete de todo o mundo. Dados em tempo real das melhores competições internacionais.
-                        </p>
-                        <button class="btn btn-hero" type="button" id="load-countries-btn">
-                            <i class="fas fa-play" aria-hidden="true"></i>
-                            Explorar Países
-                        </button>
-                    </div>
-                    <div class="hero-image">
-                        <div class="hero-graphic">
-                            <i class="fas fa-basketball-ball hero-icon" aria-hidden="true"></i>
-                            <div class="pulse-effect"></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- API Status -->
-            <div id="api-status" class="api-status" aria-live="polite">
-                <div class="status-indicator">
-                    <i class="fas fa-wifi" aria-hidden="true"></i>
-                    <span id="status-text">Conectando à API...</span>
-                </div>
+    <!-- Container Principal -->
+    <main class="container" role="main">
+        <!-- Estatísticas -->
+        <section class="stats-grid" aria-label="Estatísticas do usuário">
+            <div class="stat-card">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-value" id="totalBets">0</div>
+                <div class="stat-label">Total de Apostas</div>
             </div>
-
-            <!-- Loading indicator -->
-            <div id="loading-indicator" class="loading-indicator" aria-hidden="true">
-                <div class="spinner"></div>
-                <span>Carregando dados do basquete...</span>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-value" id="wonBets">0</div>
+                <div class="stat-label">Apostas Ganhas</div>
             </div>
-
-            <!-- Error message -->
-            <div id="error-message" class="error-message" role="alert" aria-hidden="true">
-                <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
-                <div class="error-content">
-                    <h3>Erro ao carregar dados</h3>
-                    <p id="error-text">Não foi possível conectar com a API de basquete.</p>
-                    <p class="error-details">Verifique sua chave da API RapidAPI.</p>
-                </div>
-                <button class="btn btn-retry" type="button" id="retry-btn">Tentar Novamente</button>
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-value" id="winRate">0%</div>
+                <div class="stat-label">Taxa de Acerto</div>
             </div>
-
-            <!-- Main Layout -->
-            <div class="main-layout">
-                <!-- Countries Section -->
-                <section class="games-section" aria-labelledby="countries-title">
-                    <div class="section-header">
-                        <h2 id="countries-title" class="section-title">
-                            <i class="fas fa-globe-americas" aria-hidden="true"></i>
-                            Países do Basquete
-                        </h2>
-                        
-                        <!-- Filters -->
-                        <div class="filters-container">
-                            <div class="filter-group">
-                                <label for="region-filter" class="filter-label">Região:</label>
-                                <select id="region-filter" class="filter-select" aria-label="Filtrar por região">
-                                    <option value="all">Todas as Regiões</option>
-                                    <option value="america">América</option>
-                                    <option value="europe">Europa</option>
-                                    <option value="asia">Ásia</option>
-                                    <option value="africa">África</option>
-                                    <option value="oceania">Oceania</option>
-                                </select>
-                            </div>
-                            
-                            <div class="search-container">
-                                <label for="search-input" class="visually-hidden">Buscar países</label>
-                                <input type="text" 
-                                       id="search-input" 
-                                       class="search-input" 
-                                       placeholder="Buscar países..."
-                                       aria-label="Buscar países">
-                                <i class="fas fa-search search-icon" aria-hidden="true"></i>
-                            </div>
-
-                            <div class="view-controls">
-                                <button class="btn btn-view active" data-view="grid" aria-label="Visualização em grade">
-                                    <i class="fas fa-th" aria-hidden="true"></i>
-                                </button>
-                                <button class="btn btn-view" data-view="list" aria-label="Visualização em lista">
-                                    <i class="fas fa-list" aria-hidden="true"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Countries Grid -->
-                    <div id="countries-container" class="games-grid" role="list">
-                        <!-- Countries will be populated by JavaScript -->
-                    </div>
-
-                    <!-- No results message -->
-                    <div id="no-results" class="no-results" aria-hidden="true">
-                        <i class="fas fa-search" aria-hidden="true"></i>
-                        <h3>Nenhum país encontrado</h3>
-                        <p>Tente ajustar os filtros ou buscar por outros termos.</p>
-                    </div>
-                </section>
-
-                <!-- Statistics Panel -->
-                <aside class="stats-panel" role="complementary" aria-labelledby="stats-title">
-                    <div class="stats-header">
-                        <h2 id="stats-title" class="stats-title">
-                            <i class="fas fa-chart-bar" aria-hidden="true"></i>
-                            Estatísticas
-                        </h2>
-                        <button class="btn-refresh-stats" type="button" aria-label="Atualizar estatísticas">
-                            <i class="fas fa-sync-alt" aria-hidden="true"></i>
-                        </button>
-                    </div>
-
-                    <div class="stats-content">
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-globe" aria-hidden="true"></i>
-                            </div>
-                            <div class="stat-info">
-                                <span class="stat-label">Total de Países</span>
-                                <span class="stat-value" id="total-countries">-</span>
-                            </div>
-                        </div>
-
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-eye" aria-hidden="true"></i>
-                            </div>
-                            <div class="stat-info">
-                                <span class="stat-label">Exibindo</span>
-                                <span class="stat-value" id="visible-countries">-</span>
-                            </div>
-                        </div>
-
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-trophy" aria-hidden="true"></i>
-                            </div>
-                            <div class="stat-info">
-                                <span class="stat-label">Ligas Ativas</span>
-                                <span class="stat-value" id="active-leagues">-</span>
-                            </div>
-                        </div>
-
-                        <div class="api-info">
-                            <h3>Informações da API</h3>
-                            <div class="api-details">
-                                <div class="api-item">
-                                    <span class="api-label">Fonte:</span>
-                                    <span class="api-value">RapidAPI Basketball</span>
-                                </div>
-                                <div class="api-item">
-                                    <span class="api-label">Status:</span>
-                                    <span class="api-value" id="api-connection-status">
-                                        <span class="status-dot"></span>
-                                        Conectado
-                                    </span>
-                                </div>
-                                <div class="api-item">
-                                    <span class="api-label">Última Atualização:</span>
-                                    <span class="api-value" id="last-update">-</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="quick-actions">
-                            <h3>Ações Rápidas</h3>
-                            <button class="btn btn-action" type="button" id="export-data">
-                                <i class="fas fa-download" aria-hidden="true"></i>
-                                Exportar Dados
-                            </button>
-                            <button class="btn btn-action" type="button" id="view-favorites">
-                                <i class="fas fa-star" aria-hidden="true"></i>
-                                Favoritos
-                            </button>
-                        </div>
-                    </div>
-                </aside>
+            <div class="stat-card">
+                <div class="stat-icon">💎</div>
+                <div class="stat-value" id="totalProfit">R$ 0,00</div>
+                <div class="stat-label">Lucro Total</div>
             </div>
+        </section>
+
+        <!-- Tabs de Esportes -->
+        <div class="sport-tabs" role="tablist">
+            <button class="sport-tab active" data-sport="all" role="tab">
+                ⚽ Todos
+            </button>
+            <button class="sport-tab" data-sport="football" role="tab">
+                ⚽ Futebol
+            </button>
+            <button class="sport-tab" data-sport="basketball" role="tab">
+                🏀 Basquete
+            </button>
+            <button class="sport-tab" data-sport="tennis" role="tab">
+                🎾 Tênis
+            </button>
+            <button class="sport-tab" data-sport="volleyball" role="tab">
+                🏐 Vôlei
+            </button>
         </div>
+
+        <!-- Filtros -->
+        <section class="filters" aria-label="Filtros de partidas">
+            <div class="filters-header">
+                <h2 class="filters-title">🔍 Filtros</h2>
+                <button class="clear-filters" id="clearFilters">Limpar Filtros</button>
+            </div>
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label for="leagueFilter" class="filter-label">Liga/Campeonato</label>
+                    <select id="leagueFilter" aria-label="Filtrar por liga">
+                        <option value="all">Todas as Ligas</option>
+                        <option value="premier">Premier League</option>
+                        <option value="laliga">La Liga</option>
+                        <option value="serie-a">Série A</option>
+                        <option value="bundesliga">Bundesliga</option>
+                        <option value="champions">Champions League</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="statusFilter" class="filter-label">Status da Partida</label>
+                    <select id="statusFilter" aria-label="Filtrar por status">
+                        <option value="all">Todos</option>
+                        <option value="live">🔴 Ao Vivo</option>
+                        <option value="scheduled">⏰ Agendados</option>
+                        <option value="finished">✅ Finalizados</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="oddFilter" class="filter-label">Faixa de Odd</label>
+                    <select id="oddFilter" aria-label="Filtrar por odd">
+                        <option value="all">Todas as Odds</option>
+                        <option value="low">Baixas (1.00 - 2.00)</option>
+                        <option value="medium">Médias (2.01 - 4.00)</option>
+                        <option value="high">Altas (4.01+)</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="searchInput" class="filter-label">Buscar Time</label>
+                    <input type="text" id="searchInput" placeholder="Digite o nome..." aria-label="Buscar time">
+                </div>
+            </div>
+        </section>
+
+        <!-- Loading -->
+        <div id="loadingMatches" class="loading" style="display: none;">
+            <div class="spinner" role="status" aria-label="Carregando"></div>
+            <p>Carregando partidas ao vivo...</p>
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="message error-message" style="display: none;" role="alert"></div>
+
+        <!-- Success Message -->
+        <div id="successMessage" class="message success-message" style="display: none;" role="status"></div>
+
+        <!-- Seção Principal -->
+        <div class="matches-section">
+            <!-- Grid de Partidas -->
+            <div class="matches-grid" id="matchesGrid" role="list" aria-label="Lista de partidas disponíveis">
+                <!-- Partidas inseridas via JavaScript -->
+            </div>
+
+            <!-- Painel de Apostas -->
+            <aside class="betting-panel" id="bettingPanel" style="display: none;" role="complementary">
+                <div class="panel-header">
+                    <h2 class="panel-title">🎲 Sua Aposta</h2>
+                    <button class="clear-bet" id="clearBet" aria-label="Limpar aposta">✖ Limpar</button>
+                </div>
+
+                <div class="bet-preview" id="betPreview">
+                    <div class="bet-info">
+                        <span class="bet-label">⚽ Partida:</span>
+                        <span class="bet-value" id="betMatch">-</span>
+                    </div>
+                    <div class="bet-info">
+                        <span class="bet-label">🎯 Tipo:</span>
+                        <span class="bet-value" id="betType">-</span>
+                    </div>
+                    <div class="bet-info">
+                        <span class="bet-label">📊 Odd:</span>
+                        <span class="bet-value" id="betOdd">-</span>
+                    </div>
+                    <div class="bet-info">
+                        <span class="bet-label">🏆 Liga:</span>
+                        <span class="bet-value" id="betLeague">-</span>
+                    </div>
+                </div>
+
+                <div class="amount-section">
+                    <label for="betAmount" class="amount-label">💰 Valor da Aposta</label>
+                    <input
+                        type="number"
+                        id="betAmount"
+                        class="amount-input"
+                        placeholder="R$ 0,00"
+                        min="10"
+                        step="10"
+                        aria-label="Valor da aposta em reais"
+                    >
+                    <div class="quick-amounts">
+                        <button class="quick-amount" data-amount="50">R$ 50</button>
+                        <button class="quick-amount" data-amount="100">R$ 100</button>
+                        <button class="quick-amount" data-amount="200">R$ 200</button>
+                        <button class="quick-amount" data-amount="500">R$ 500</button>
+                    </div>
+                </div>
+
+                <div class="potential-win" role="status" aria-live="polite">
+                    <div class="potential-label">🎁 Ganho Potencial</div>
+                    <div class="potential-amount" id="potentialWin">R$ 0,00</div>
+                </div>
+
+                <button class="place-bet-button" id="placeBetButton">
+                    ⚡ Fazer Aposta
+                </button>
+            </aside>
+        </div>
+
+        <!-- Histórico de Apostas -->
+        <section class="history-section" aria-label="Histórico de apostas">
+            <h2 class="section-title">📜 Histórico de Apostas</h2>
+           
+            <div class="history-tabs">
+                <button class="history-tab active" data-filter="all">Todas</button>
+                <button class="history-tab" data-filter="pending">Pendentes</button>
+                <button class="history-tab" data-filter="won">Ganhas</button>
+                <button class="history-tab" data-filter="lost">Perdidas</button>
+            </div>
+
+            <div class="history-grid" id="historyGrid">
+                <div class="empty-state">
+                    <div class="empty-icon">📋</div>
+                    <p>Nenhuma aposta realizada ainda.<br>Comece apostando em uma partida!</p>
+                </div>
+            </div>
+        </section>
     </main>
 
-    <!-- Footer -->
-    <footer class="main-footer" role="contentinfo">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <div class="footer-logo">
-                        <i class="fas fa-basketball-ball" aria-hidden="true"></i>
-                        <span>BasqueteJG</span>
-                    </div>
-                    <p class="footer-description">
-                        A melhor plataforma para explorar o basquete mundial. 
-                        Dados atualizados e informações detalhadas de países e ligas.
-                    </p>
-                    <div class="social-links">
-                        <a href="#" class="social-link" aria-label="Facebook">
-                            <i class="fab fa-facebook-f" aria-hidden="true"></i>
-                        </a>
-                        <a href="#" class="social-link" aria-label="Twitter">
-                            <i class="fab fa-twitter" aria-hidden="true"></i>
-                        </a>
-                        <a href="#" class="social-link" aria-label="Instagram">
-                            <i class="fab fa-instagram" aria-hidden="true"></i>
-                        </a>
-                        <a href="#" class="social-link" aria-label="YouTube">
-                            <i class="fab fa-youtube" aria-hidden="true"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="footer-links">
-                    <div class="footer-column">
-                        <h3 class="footer-column-title">Plataforma</h3>
-                        <ul class="footer-link-list">
-                            <li><a href="#" class="footer-link">Sobre Nós</a></li>
-                            <li><a href="#" class="footer-link">Como Funciona</a></li>
-                            <li><a href="#" class="footer-link">API</a></li>
-                            <li><a href="#" class="footer-link">Blog</a></li>
-                        </ul>
-                    </div>
-                    
-                    <div class="footer-column">
-                        <h3 class="footer-column-title">Basquete</h3>
-                        <ul class="footer-link-list">
-                            <li><a href="#" class="footer-link">Países</a></li>
-                            <li><a href="#" class="footer-link">Ligas</a></li>
-                            <li><a href="#" class="footer-link">Times</a></li>
-                            <li><a href="#" class="footer-link">Estatísticas</a></li>
-                        </ul>
-                    </div>
-                    
-                    <div class="footer-column">
-                        <h3 class="footer-column-title">Suporte</h3>
-                        <ul class="footer-link-list">
-                            <li><a href="#" class="footer-link">Central de Ajuda</a></li>
-                            <li><a href="#" class="footer-link">Contato</a></li>
-                            <li><a href="#" class="footer-link">Documentação</a></li>
-                            <li><a href="#" class="footer-link">FAQ</a></li>
-                        </ul>
-                    </div>
-                    
-                    <div class="footer-column">
-                        <h3 class="footer-column-title">Legal</h3>
-                        <ul class="footer-link-list">
-                            <li><a href="#" class="footer-link">Política de Privacidade</a></li>
-                            <li><a href="#" class="footer-link">Termos de Uso</a></li>
-                            <li><a href="#" class="footer-link">Cookies</a></li>
-                            <li><a href="#" class="footer-link">Licenças</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <div class="footer-bottom-content">
-                    <p class="copyright">
-                        © 2024 BasqueteJG. Todos os direitos reservados.
-                    </p>
-                    <div class="footer-badges">
-                        <div class="api-badge">
-                            <i class="fas fa-code" aria-hidden="true"></i>
-                            <span>Powered by RapidAPI</span>
-                        </div>
-                        <div class="security-badge">
-                            <i class="fas fa-shield-alt" aria-hidden="true"></i>
-                            <span>Dados Seguros</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Country Modal -->
-    <div id="country-modal" class="modal" aria-hidden="true">
-        <div class="modal-backdrop"></div>
+    <!-- Modal -->
+    <div class="modal" id="confirmModal" role="dialog" aria-labelledby="modalTitle" aria-describedby="modalMessage">
         <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modal-title" class="modal-title">Detalhes do País</h3>
-                <button class="modal-close" type="button" aria-label="Fechar modal">
-                    <i class="fas fa-times" aria-hidden="true"></i>
-                </button>
-            </div>
-            <div class="modal-body" id="modal-body">
-                <!-- Content will be populated by JavaScript -->
-            </div>
+            <div class="modal-icon" id="modalIcon">✅</div>
+            <h3 class="modal-title" id="modalTitle">Sucesso!</h3>
+            <p class="modal-message" id="modalMessage">Operação realizada com sucesso.</p>
+            <button class="modal-button" id="modalButton">Entendi</button>
         </div>
     </div>
 
-    <!-- Toast notifications -->
-    <div id="toast-container" class="toast-container" aria-live="polite" aria-label="Notificações"></div>
+    <script>
+        // ===== CONFIGURAÇÕES =====
+        const CONFIG = {
+            INITIAL_BALANCE: 1000,
+            MIN_BET: 10,
+            API_TIMEOUT: 10000,
+            RETRY_ATTEMPTS: 3,
+            AUTO_REFRESH: 30000 // 30 segundos
+        };
 
-    <!-- JavaScript -->
-    <script src="script.js"></script>
+        const ERROR_CODES = {
+            API_TIMEOUT: 'ERR_001',
+            API_UNAVAILABLE: 'ERR_002',
+            INVALID_DATA: 'ERR_003',
+            INSUFFICIENT_BALANCE: 'ERR_004',
+            MATCH_STARTED: 'ERR_005',
+            NETWORK_ERROR: 'ERR_006'
+        };
+
+        // ===== ESTADO DA APLICAÇÃO =====
+        const state = {
+            balance: CONFIG.INITIAL_BALANCE,
+            currentBet: null,
+            matches: [],
+            bettingHistory: [],
+            stats: { totalBets: 0, wonBets: 0, totalProfit: 0 },
+            filters: { sport: 'all', league: 'all', status: 'all', odd: 'all', search: '' },
+            historyFilter: 'all',
+            theme: 'dark',
+            autoRefreshInterval: null
+        };
+
+        // ===== INICIALIZAÇÃO =====
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🎰 BetPro v2.0 iniciado');
+            loadFromStorage();
+            updateUI();
+            setupEventListeners();
+            loadMatches();
+            startAutoRefresh();
+        });
+
+        // ===== PERSISTÊNCIA DE DADOS =====
+        function loadFromStorage() {
+            try {
+                if (window.betProData) {
+                    state.balance = window.betProData.balance || CONFIG.INITIAL_BALANCE;
+                    state.bettingHistory = window.betProData.history || [];
+                    state.stats = window.betProData.stats || state.stats;
+                }
+            } catch (error) {
+                console.error('❌ Erro ao carregar dados:', error);
+            }
+        }
+
+        function saveToStorage() {
+            try {
+                window.betProData = {
+                    balance: state.balance,
+                    history: state.bettingHistory,
+                    stats: state.stats,
+                    lastUpdate: Date.now()
+                };
+            } catch (error) {
+                console.error('❌ Erro ao salvar:', error);
+            }
+        }
+
+        // ===== CARREGAMENTO DE PARTIDAS =====
+        async function loadMatches(attempt = 1) {
+            const loadingEl = document.getElementById('loadingMatches');
+            const errorEl = document.getElementById('errorMessage');
+            const matchesGrid = document.getElementById('matchesGrid');
+
+            try {
+                loadingEl.style.display = 'block';
+                errorEl.style.display = 'none';
+
+                // Simula carregamento de APIs
+                await new Promise(resolve => setTimeout(resolve, 1000));
+               
+                state.matches = generateEnhancedMockMatches();
+                console.log(`✅ ${state.matches.length} partidas carregadas`);
+               
+                renderMatches();
+                loadingEl.style.display = 'none';
+                showSuccess('Partidas atualizadas com sucesso!');
+
+            } catch (error) {
+                console.error('❌ Erro:', error);
+                if (attempt < CONFIG.RETRY_ATTEMPTS) {
+                    setTimeout(() => loadMatches(attempt + 1), 2000);
+                } else {
+                    loadingEl.style.display = 'none';
+                    showError('Erro ao carregar partidas. Usando dados de demonstração.');
+                    state.matches = generateEnhancedMockMatches();
+                    renderMatches();
+                }
+            }
+        }
+
+        function generateEnhancedMockMatches() {
+            const teams = [
+                { name: 'Manchester City', logo: '🔵', country: 'ENG' },
+                { name: 'Real Madrid', logo: '⚪', country: 'ESP' },
+                { name: 'Bayern München', logo: '🔴', country: 'GER' },
+                { name: 'PSG', logo: '💙', country: 'FRA' },
+                { name: 'Liverpool', logo: '🔴', country: 'ENG' },
+                { name: 'Barcelona', logo: '🔵', country: 'ESP' },
+                { name: 'Juventus', logo: '⚫', country: 'ITA' },
+                { name: 'Chelsea', logo: '🔵', country: 'ENG' },
+                { name: 'Atlético Madrid', logo: '🔴', country: 'ESP' },
+                { name: 'Inter Milan', logo: '🔵', country: 'ITA' },
+                { name: 'Borussia Dortmund', logo: '🟡', country: 'GER' },
+                { name: 'Arsenal', logo: '🔴', country: 'ENG' }
+            ];
+
+            const leagues = [
+                { name: 'Premier League', icon: '🏴󐁧󐁢󐁥󐁮󐁧󐁿' },
+                { name: 'La Liga', icon: '🇪🇸' },
+                { name: 'Bundesliga', icon: '🇩🇪' },
+                { name: 'Serie A', icon: '🇮🇹' },
+                { name: 'Ligue 1', icon: '🇫🇷' },
+                { name: 'Champions League', icon: '⭐' }
+            ];
+
+            const matches = [];
+            const now = new Date();
+
+            for (let i = 0; i < 15; i++) {
+                const homeTeam = teams[Math.floor(Math.random() * teams.length)];
+                let awayTeam = teams[Math.floor(Math.random() * teams.length)];
+               
+                while (awayTeam.name === homeTeam.name) {
+                    awayTeam = teams[Math.floor(Math.random() * teams.length)];
+                }
+
+                const league = leagues[Math.floor(Math.random() * leagues.length)];
+                const isLive = Math.random() > 0.6;
+                const matchTime = new Date(now.getTime() + (Math.random() * 7200000));
+
+                const homeOdd = (1.3 + Math.random() * 3).toFixed(2);
+                const drawOdd = (2.5 + Math.random() * 2).toFixed(2);
+                const awayOdd = (1.3 + Math.random() * 3).toFixed(2);
+
+                matches.push({
+                    id: `match_${i + 1}`,
+                    homeTeam: homeTeam.name,
+                    homeLogo: homeTeam.logo,
+                    awayTeam: awayTeam.name,
+                    awayLogo: awayTeam.logo,
+                    league: league.name,
+                    leagueIcon: league.icon,
+                    time: matchTime.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+                    isLive: isLive,
+                    odds: { home: homeOdd, draw: drawOdd, away: awayOdd },
+                    sport: 'football',
+                    status: isLive ? 'live' : 'scheduled',
+                    stats: {
+                        homeForm: Math.floor(Math.random() * 100),
+                        awayForm: Math.floor(Math.random() * 100),
+                        h2h: `${Math.floor(Math.random() * 5)}-${Math.floor(Math.random() * 5)}`
+                    }
+                });
+            }
+
+            return matches;
+        }
+
+        // ===== RENDERIZAÇÃO =====
+        function renderMatches() {
+            const matchesGrid = document.getElementById('matchesGrid');
+            const filters = state.filters;
+           
+            let filteredMatches = state.matches.filter(match => {
+                if (filters.sport !== 'all' && match.sport !== filters.sport) return false;
+                if (filters.status !== 'all' && match.status !== filters.status) return false;
+                if (filters.odd !== 'all') {
+                    const maxOdd = Math.max(match.odds.home, match.odds.draw, match.odds.away);
+                    if (filters.odd === 'low' && maxOdd > 2) return false;
+                    if (filters.odd === 'medium' && (maxOdd <= 2 || maxOdd > 4)) return false;
+                    if (filters.odd === 'high' && maxOdd <= 4) return false;
+                }
+                if (filters.search) {
+                    const searchLower = filters.search.toLowerCase();
+                    return match.homeTeam.toLowerCase().includes(searchLower) ||
+                           match.awayTeam.toLowerCase().includes(searchLower);
+                }
+                return true;
+            });
+
+            if (filteredMatches.length === 0) {
+                matchesGrid.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1/-1;">
+                        <div class="empty-icon">🔍</div>
+                        <p>Nenhuma partida encontrada<br>Tente ajustar os filtros</p>
+                    </div>
+                `;
+                return;
+            }
+
+            matchesGrid.innerHTML = filteredMatches.map(match => `
+                <article class="match-card" data-match-id="${match.id}" role="listitem">
+                    <div class="match-header">
+                        <span class="league-badge">
+                            ${match.leagueIcon} ${match.league}
+                        </span>
+                        ${match.isLive ?
+                            '<span class="live-indicator"><span class="live-dot"></span> AO VIVO</span>' :
+                            `<span class="match-time">⏰ ${match.time}</span>`
+                        }
+                    </div>
+                   
+                    <div class="teams-container">
+                        <div class="team">
+                            <div class="team-logo">${match.homeLogo}</div>
+                            <span class="team-name">${match.homeTeam}</span>
+                        </div>
+                        <div class="vs">VS</div>
+                        <div class="team">
+                            <div class="team-logo">${match.awayLogo}</div>
+                            <span class="team-name">${match.awayTeam}</span>
+                        </div>
+                    </div>
+
+                    <div class="match-stats">
+                        <div class="stat-mini">
+                            <div class="stat-mini-value">${match.stats.homeForm}%</div>
+                            <div class="stat-mini-label">Forma Casa</div>
+                        </div>
+                        <div class="stat-mini">
+                            <div class="stat-mini-value">${match.stats.h2h}</div>
+                            <div class="stat-mini-label">H2H</div>
+                        </div>
+                        <div class="stat-mini">
+                            <div class="stat-mini-value">${match.stats.awayForm}%</div>
+                            <div class="stat-mini-label">Forma Fora</div>
+                        </div>
+                    </div>
+
+                    <div class="odds-container">
+                        <button class="odd-button" data-type="home" data-odd="${match.odds.home}">
+                            <span class="odd-type">Casa</span>
+                            <span class="odd-value">${match.odds.home}</span>
+                        </button>
+                        <button class="odd-button" data-type="draw" data-odd="${match.odds.draw}">
+                            <span class="odd-type">Empate</span>
+                            <span class="odd-value">${match.odds.draw}</span>
+                        </button>
+                        <button class="odd-button" data-type="away" data-odd="${match.odds.away}">
+                            <span class="odd-type">Fora</span>
+                            <span class="odd-value">${match.odds.away}</span>
+                        </button>
+                    </div>
+                </article>
+            `).join('');
+
+            document.querySelectorAll('.odd-button').forEach(button => {
+                button.addEventListener('click', handleOddClick);
+            });
+        }
+
+        // ===== MANIPULAÇÃO DE APOSTAS =====
+        function handleOddClick(event) {
+            const button = event.currentTarget;
+            const matchCard = button.closest('.match-card');
+            const matchId = matchCard.dataset.matchId;
+            const match = state.matches.find(m => m.id === matchId);
+
+            if (!match) return;
+
+            const betType = button.dataset.type;
+            const odd = parseFloat(button.dataset.odd);
+
+            document.querySelectorAll('.odd-button.selected').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+
+            button.classList.add('selected');
+
+            state.currentBet = {
+                matchId,
+                match: `${match.homeTeam} vs ${match.awayTeam}`,
+                type: betType,
+                odd,
+                league: match.league
+            };
+
+            showBettingPanel();
+            updateBettingPanel();
+        }
+
+        function showBettingPanel() {
+            const panel = document.getElementById('bettingPanel');
+            panel.style.display = 'block';
+            panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function updateBettingPanel() {
+            if (!state.currentBet) return;
+
+            const betTypeLabels = {
+                home: '🏠 Vitória Casa',
+                draw: '🤝 Empate',
+                away: '✈️ Vitória Fora'
+            };
+
+            document.getElementById('betMatch').textContent = state.currentBet.match;
+            document.getElementById('betType').textContent = betTypeLabels[state.currentBet.type];
+            document.getElementById('betOdd').textContent = state.currentBet.odd.toFixed(2);
+            document.getElementById('betLeague').textContent = state.currentBet.league;
+
+            calculatePotentialWin();
+        }
+
+        function calculatePotentialWin() {
+            const betAmount = parseFloat(document.getElementById('betAmount').value) || 0;
+            const odd = state.currentBet?.odd || 0;
+            const potentialWin = betAmount * odd;
+
+            document.getElementById('potentialWin').textContent = formatCurrency(potentialWin);
+
+            const placeBetButton = document.getElementById('placeBetButton');
+            placeBetButton.disabled = betAmount < CONFIG.MIN_BET || betAmount > state.balance;
+        }
+
+        function placeBet() {
+            const betAmount = parseFloat(document.getElementById('betAmount').value);
+
+            if (!state.currentBet) {
+                showError('Selecione uma aposta primeiro');
+                return;
+            }
+
+            if (betAmount < CONFIG.MIN_BET) {
+                showError(`Valor mínimo: ${formatCurrency(CONFIG.MIN_BET)}`);
+                return;
+            }
+
+            if (betAmount > state.balance) {
+                showError('Saldo insuficiente!');
+                return;
+            }
+
+            state.balance -= betAmount;
+           
+            const bet = {
+                id: `bet_${Date.now()}`,
+                ...state.currentBet,
+                amount: betAmount,
+                potentialWin: betAmount * state.currentBet.odd,
+                timestamp: new Date().toLocaleString('pt-BR'),
+                status: 'pending'
+            };
+
+            state.bettingHistory.unshift(bet);
+            state.stats.totalBets++;
+
+            // Simula resultado (60% chance de ganhar)
+            setTimeout(() => {
+                const won = Math.random() > 0.4;
+                bet.status = won ? 'won' : 'lost';
+               
+                if (won) {
+                    state.balance += bet.potentialWin;
+                    state.stats.wonBets++;
+                    state.stats.totalProfit += (bet.potentialWin - bet.amount);
+                    showModal('🎉', 'Você Ganhou!', `Parabéns! Você ganhou ${formatCurrency(bet.potentialWin)}!`);
+                } else {
+                    state.stats.totalProfit -= bet.amount;
+                    showModal('😔', 'Que pena!', `Não foi dessa vez. Continue tentando!`);
+                }
+
+                saveToStorage();
+                updateUI();
+                renderHistory();
+            }, 8000);
+
+            saveToStorage();
+            updateUI();
+            renderHistory();
+            clearBet();
+
+            showModal('✅', 'Aposta Confirmada!', `Sua aposta de ${formatCurrency(betAmount)} foi registrada!`);
+        }
+
+        function clearBet() {
+            state.currentBet = null;
+            document.getElementById('betAmount').value = '';
+            document.getElementById('bettingPanel').style.display = 'none';
+            document.querySelectorAll('.odd-button.selected').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+        }
+
+        // ===== HISTÓRICO =====
+        function renderHistory() {
+            const historyGrid = document.getElementById('historyGrid');
+            const filter = state.historyFilter;
+
+            let filteredHistory = state.bettingHistory;
+            if (filter !== 'all') {
+                filteredHistory = state.bettingHistory.filter(bet => bet.status === filter);
+            }
+
+            if (filteredHistory.length === 0) {
+                historyGrid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📋</div>
+                        <p>Nenhuma aposta ${filter !== 'all' ? filter === 'pending' ? 'pendente' : filter === 'won' ? 'ganha' : 'perdida' : ''} encontrada</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const statusLabels = {
+                pending: { text: '⏳ Pendente', class: 'result-pending' },
+                won: { text: '✅ Ganhou', class: 'result-win' },
+                lost: { text: '❌ Perdeu', class: 'result-loss' }
+            };
+
+            historyGrid.innerHTML = filteredHistory.map(bet => {
+                const status = statusLabels[bet.status];
+                return `
+                    <div class="history-item">
+                        <div class="history-details">
+                            <div class="history-match">⚽ ${bet.match}</div>
+                            <div class="history-info">
+                                🏆 ${bet.league} • 🕐 ${bet.timestamp}
+                            </div>
+                            <div class="history-info">
+                                💰 Aposta: ${formatCurrency(bet.amount)} • 📊 Odd: ${bet.odd.toFixed(2)}
+                            </div>
+                        </div>
+                        <div class="history-result">
+                            <span class="result-badge ${status.class}">${status.text}</span>
+                            <span style="font-weight: 600; font-size: 1.2rem; color: ${bet.status === 'won' ? 'var(--success)' : bet.status === 'lost' ? 'var(--error)' : 'var(--warning)'}">
+                                ${bet.status === 'won' ? '+' : bet.status === 'lost' ? '-' : ''}${formatCurrency(bet.status === 'won' ? bet.potentialWin : bet.status === 'lost' ? bet.amount : bet.potentialWin)}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ===== ATUALIZAÇÃO DE UI =====
+        function updateUI() {
+            document.getElementById('userBalance').textContent = formatCurrency(state.balance);
+            document.getElementById('totalBets').textContent = state.stats.totalBets;
+            document.getElementById('wonBets').textContent = state.stats.wonBets;
+           
+            const winRate = state.stats.totalBets > 0
+                ? ((state.stats.wonBets / state.stats.totalBets) * 100).toFixed(1)
+                : 0;
+            document.getElementById('winRate').textContent = `${winRate}%`;
+           
+            document.getElementById('totalProfit').textContent = formatCurrency(state.stats.totalProfit);
+        }
+
+        // ===== EVENT LISTENERS =====
+        function setupEventListeners() {
+            // Tabs de esportes
+            document.querySelectorAll('.sport-tab').forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    document.querySelectorAll('.sport-tab').forEach(t => t.classList.remove('active'));
+                    e.target.classList.add('active');
+                    state.filters.sport = e.target.dataset.sport;
+                    renderMatches();
+                });
+            });
+
+            // Filtros
+            document.getElementById('leagueFilter').addEventListener('change', (e) => {
+                state.filters.league = e.target.value;
+                renderMatches();
+            });
+
+            document.getElementById('statusFilter').addEventListener('change', (e) => {
+                state.filters.status = e.target.value;
+                renderMatches();
+            });
+
+            document.getElementById('oddFilter').addEventListener('change', (e) => {
+                state.filters.odd = e.target.value;
+                renderMatches();
+            });
+
+            document.getElementById('searchInput').addEventListener('input', debounce((e) => {
+                state.filters.search = e.target.value;
+                renderMatches();
+            }, 300));
+
+            document.getElementById('clearFilters').addEventListener('click', () => {
+                state.filters = { sport: 'all', league: 'all', status: 'all', odd: 'all', search: '' };
+                document.getElementById('leagueFilter').value = 'all';
+                document.getElementById('statusFilter').value = 'all';
+                document.getElementById('oddFilter').value = 'all';
+                document.getElementById('searchInput').value = '';
+                document.querySelectorAll('.sport-tab').forEach(t => t.classList.remove('active'));
+                document.querySelector('.sport-tab[data-sport="all"]').classList.add('active');
+                renderMatches();
+                showSuccess('Filtros limpos!');
+            });
+
+            // Valores rápidos
+            document.querySelectorAll('.quick-amount').forEach(button => {
+                button.addEventListener('click', () => {
+                    document.getElementById('betAmount').value = button.dataset.amount;
+                    calculatePotentialWin();
+                });
+            });
+
+            // Input de valor
+            document.getElementById('betAmount').addEventListener('input', calculatePotentialWin);
+
+            // Botões principais
+            document.getElementById('clearBet').addEventListener('click', clearBet);
+            document.getElementById('placeBetButton').addEventListener('click', placeBet);
+            document.getElementById('modalButton').addEventListener('click', closeModal);
+            document.getElementById('refreshBtn').addEventListener('click', () => {
+                loadMatches();
+            });
+
+            // Theme toggle
+            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
+            // Tabs de histórico
+            document.querySelectorAll('.history-tab').forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    document.querySelectorAll('.history-tab').forEach(t => t.classList.remove('active'));
+                    e.target.classList.add('active');
+                    state.historyFilter = e.target.dataset.filter;
+                    renderHistory();
+                });
+            });
+
+            // Tecla ESC para fechar modal
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeModal();
+            });
+
+            console.log('✅ Event listeners configurados');
+        }
+
+        // ===== AUTO REFRESH =====
+        function startAutoRefresh() {
+            state.autoRefreshInterval = setInterval(() => {
+                console.log('🔄 Auto-refresh das partidas...');
+                loadMatches();
+            }, CONFIG.AUTO_REFRESH);
+        }
+
+        // ===== THEME TOGGLE =====
+        function toggleTheme() {
+            const root = document.documentElement;
+            const themeBtn = document.getElementById('themeToggle');
+           
+            if (state.theme === 'dark') {
+                root.style.setProperty('--bg-dark', '#f5f5f5');
+                root.style.setProperty('--bg-card', '#ffffff');
+                root.style.setProperty('--bg-hover', '#e0e0e0');
+                root.style.setProperty('--text-primary', '#000000');
+                root.style.setProperty('--text-secondary', '#666666');
+                root.style.setProperty('--border', '#dddddd');
+                themeBtn.textContent = '☀️';
+                state.theme = 'light';
+                showSuccess('Tema claro ativado!');
+            } else {
+                root.style.setProperty('--bg-dark', '#0a0e17');
+                root.style.setProperty('--bg-card', '#151923');
+                root.style.setProperty('--bg-hover', '#1e242e');
+                root.style.setProperty('--text-primary', '#ffffff');
+                root.style.setProperty('--text-secondary', '#a0a5b8');
+                root.style.setProperty('--border', '#2a3040');
+                themeBtn.textContent = '🌙';
+                state.theme = 'dark';
+                showSuccess('Tema escuro ativado!');
+            }
+        }
+
+        // ===== MODAL =====
+        function showModal(icon, title, message) {
+            const modal = document.getElementById('confirmModal');
+            document.getElementById('modalIcon').textContent = icon;
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').textContent = message;
+            modal.classList.add('active');
+            document.getElementById('modalButton').focus();
+        }
+
+        function closeModal() {
+            document.getElementById('confirmModal').classList.remove('active');
+        }
+
+        // ===== MENSAGENS =====
+        function showError(message) {
+            const errorEl = document.getElementById('errorMessage');
+            errorEl.textContent = '❌ ' + message;
+            errorEl.style.display = 'block';
+            setTimeout(() => {
+                errorEl.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const successEl = document.getElementById('successMessage');
+            successEl.textContent = '✅ ' + message;
+            successEl.style.display = 'block';
+            setTimeout(() => {
+                successEl.style.display = 'none';
+            }, 3000);
+        }
+
+        // ===== UTILITÁRIOS =====
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(value);
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        function handleError(errorCode, message) {
+            console.error(`[${errorCode}] ${message}`);
+           
+            const errorMessages = {
+                [ERROR_CODES.API_TIMEOUT]: '⏱️ Tempo esgotado ao conectar com servidor',
+                [ERROR_CODES.API_UNAVAILABLE]: '🔌 Serviço temporariamente indisponível',
+                [ERROR_CODES.INVALID_DATA]: '⚠️ Dados inválidos recebidos',
+                [ERROR_CODES.INSUFFICIENT_BALANCE]: '💰 Saldo insuficiente para realizar aposta',
+                [ERROR_CODES.MATCH_STARTED]: '⚽ Esta partida já foi iniciada',
+                [ERROR_CODES.NETWORK_ERROR]: '📡 Erro de conexão com a internet'
+            };
+
+            showError(errorMessages[errorCode] || message);
+        }
+
+        // ===== LOG INICIAL =====
+        console.log(`
+
+║     🎰 BetPro - Sistema de Apostas v2.0      
+
+║ 📊 APIs Integradas: 2                         
+║ ⚡ Timeout: ${CONFIG.API_TIMEOUT}ms                        
+║ 🔄 Retry: ${CONFIG.RETRY_ATTEMPTS}x                               
+║ 💰 Aposta mínima: ${formatCurrency(CONFIG.MIN_BET)}                 
+║ 🔄 Auto-refresh: ${CONFIG.AUTO_REFRESH/1000}s                    
+║ ♿ Acessibilidade: WCAG 2.1 AA               
+║ 📱 Responsivo: ✅                            
+║ 🎨 Temas: Dark/Light                         
+
+        `);
+    </script>
 </body>
 </html>
